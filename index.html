@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I racconti mancanti di Ilaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-wine: #9f1239;
+            --accent-wine-light: #fb7185;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --locked: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            transition: filter 0.5s ease; /* Per l'effetto sbronza */
+        }
+
+        /* Effetto visivo quando non si è sobri */
+        body.tipsy {
+            filter: blur(0.6px) contrast(105%);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Status Bar / Controller */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Widget Esperienza */
+        .xp-widget, .wine-widget {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: space-between;
+        }
+
+        .xp-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .xp-bar-bg {
+            background: var(--bg);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+            height: 100%;
+            width: 35%;
+            transition: width 0.5s ease;
+        }
+
+        .btn-action {
+            align-self: flex-start;
+            background: transparent;
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        .btn-wine {
+            border-color: var(--accent-wine-light);
+            color: var(--accent-wine-light);
+        }
+
+        .btn-wine:hover {
+            background: var(--accent-wine);
+            border-color: var(--accent-wine);
+            color: white;
+        }
+
+        /* Cards Accordion */
+        .story-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .story-card:hover {
+            border-color: #64748b;
+        }
+
+        .story-header {
+            padding: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .story-header .badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .story-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .story-content.open {
+            padding: 1.2rem;
+            max-height: 500px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Stili Bloccati */
+        .story-card.locked {
+            opacity: 0.6;
+            border-color: var(--locked);
+        }
+
+        .story-card.locked .story-header {
+            cursor: not-allowed;
+        }
+
+        .icon {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>I racconti mancanti di Ilaria 📖</h1>
+            <p class="subtitle">Aneddoti, segreti e conversazioni da sbloccare con molta pazienza (e del buon vino).</p>
+        </header>
+
+        <!-- DASHBOARD STATUS -->
+        <div class="controls-grid">
+            <!-- Widget XP -->
+            <div class="xp-widget">
+                <div class="xp-header">
+                    <span>Livello Esperienza: <strong id="lvl-text">3</strong></span>
+                    <span id="xp-text">350 / 1000 XP</span>
+                </div>
+                <div class="xp-bar-bg">
+                    <div class="xp-bar-fill" id="xp-bar"></div>
+                </div>
+                <button class="btn-action" onclick="gainXP()">💬 Chiacchiera (+250 XP)</button>
+            </div>
+
+            <!-- Widget Sobrietà -->
+            <div class="wine-widget">
+                <div class="xp-header">
+                    <span>Stato attuale: <strong id="sobriety-text" style="color: #22c55e;">Sobrio 😇</strong></span>
+                    <span id="glasses-text">0 Bicchieri</span>
+                </div>
+                <button class="btn-action btn-wine" onclick="drinkWine()">🍷 Bevi un bicchiere di vino</button>
+            </div>
+        </div>
+
+        <!-- SEZIONE 1 -->
+        <div class="section-title">
+            <span>🔒</span>
+            <h2>1. Esperienza & Conoscenza</h2>
+        </div>
+
+        <div class="story-card locked" id="story-english">
+            <div class="story-header" onclick="toggleLockedStory()">
+                <span><span class="icon">🇬🇧</span>Perché Ilaria non parla inglese anche se lo sa un pochino?</span>
+                <span class="badge" id="badge-english">Richiede Liv. 5</span>
+            </div>
+            <div class="story-content" id="content-english">
+                <p><strong>[SBLOCCATO!]</strong> La verità è che Ilaria soffre della classica "Sindrome da Panic-English". Nella sua testa conosce la grammatica, ma appena sente un <i>"So, tell me about yourself..."</i>, la sua mente traduce automaticamente tutto in dialetto o panico puro. Preferisce il silenzio tattico al rischio di dire <i>"I am agree"</i>!</p>
+            </div>
+        </div>
+
+
+        <!-- SEZIONE 2 -->
+        <div class="section-title">
+            <span>💬</span>
+            <h2>2. Conversazioni Casual</h2>
+        </div>
+
+        <div class="story-card">
+            <div class="story-header" onclick="toggleStory(this)">
+                <span><span class="icon">🚂</span>Cos'è successo al viaggio per Milano il 19 settembre?</span>
+                <span class="badge">Leggi</span>
+            </div>
+            <div class="story-content">
+                <p>Spoiler: il treno, una coincidenza persa e una serie di sfortunate (ma divertenti) decisioni. Quel 19 settembre si è trasformato da una semplice gita a una maratona di sopravvivenza urbana tra ritardi Trenitalia e caffè presi al volo per non crollare.</p>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <div class="story-header" onclick="toggleStory(this)">
+                <span><span class="icon">🌐</span>Il ragazzo conosciuto una vita fa online</span>
+                <span class="badge">Leggi</span>
+            </div>
+            <div class="story-content">
+                <p>I tempi d'oro di MSN/forum. Una di quelle amicizie nate per caso su internet, fatta di chat fino alle 3 di notte, promesse di vedersi mai mantenute (o quasi) e quel pizzico di nostalgia dei primi anni 2000 che fa sempre sorridere.</p>
+            </div>
+        </div>
+
+
+        <!-- SEZIONE 3 (NUOVA) -->
+        <div class="section-title">
+            <span>🍷</span>
+            <h2>3. Racconti con Vino</h2>
+        </div>
+
+        <div class="story-card locked" id="story-wine">
+            <div class="story-header" onclick="toggleWineStory()">
+                <span><span class="icon">🍾</span>La verità filosofica scritta sul tovagliolo dopo il terzo calice</span>
+                <span class="badge" id="badge-wine" style="background: rgba(159, 18, 57, 0.4);">Requisito: Non essere sobrio</span>
+            </div>
+            <div class="story-content" id="content-wine">
+                <p><strong>[SBLOCCATO DALLA SBRONZA!]</strong> Qui le inibizioni cadono. Questo racconto contiene teorie sgangherate sull'universo, confessioni imbarazzanti e quella promessa fatta a fine serata tipo <i>"Dobbiamo assolutamente aprire un bar insieme in Portogallo"</i> che il giorno dopo viene puntualmente dimenticata.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Stato Esperienza
+        let currentXP = 350;
+        const requiredXP = 1000;
+
+        // Stato Vino
+        let glassesOfWine = 0;
+
+        function toggleStory(headerElement) {
+            const content = headerElement.nextElementSibling;
+            content.classList.toggle('open');
+        }
+
+        // Logica Sezione 1 (XP)
+        function toggleLockedStory() {
+            if (currentXP < requiredXP) {
+                alert("🔒 Livello troppo basso! Fai due chiacchiere con Ilaria per accumulare più esperienza e sbloccare questo racconto.");
+            } else {
+                const content = document.getElementById('content-english');
+                content.classList.toggle('open');
+            }
+        }
+
+        function gainXP() {
+            if (currentXP < requiredXP) {
+                currentXP += 250;
+                if (currentXP > requiredXP) currentXP = requiredXP;
+                
+                const percentage = (currentXP / requiredXP) * 100;
+                document.getElementById('xp-bar').style.width = percentage + '%';
+                document.getElementById('xp-text').innerText = `${currentXP} / ${requiredXP} XP`;
+
+                if (currentXP >= requiredXP) {
+                    document.getElementById('lvl-text').innerText = '5 (Sbloccato!)';
+                    const card = document.getElementById('story-english');
+                    card.classList.remove('locked');
+                    
+                    const badge = document.getElementById('badge-english');
+                    badge.innerText = 'Sbloccato!';
+                    badge.style.background = '#22c55e';
+                    badge.style.color = '#fff';
+                    
+                    alert("🎉 Complimenti! Hai abbastanza confidenza per sbloccare il segreto sull'inglese di Ilaria!");
+                }
+            }
+        }
+
+        // Logica Sezione 3 (Vino)
+        function toggleWineStory() {
+            if (glassesOfWine === 0) {
+                alert("🍷 Requisito non soddisfatto! Sei ancora troppo sobrio per ascoltare queste storie. Bevi almeno un bicchiere di vino!");
+            } else {
+                const content = document.getElementById('content-wine');
+                content.classList.toggle('open');
+            }
+        }
+
+        function drinkWine() {
+            glassesOfWine++;
+            document.getElementById('glasses-text').innerText = `${glassesOfWine} Bicchier${glassesOfWine === 1 ? 'e' : 'i'}`;
+            
+            // Attiva effetto sfocatura/ebbrezza sulla pagina
+            document.body.classList.add('tipsy');
+
+            const statusText = document.getElementById('sobriety-text');
+            statusText.innerText = 'Allegro / Non sobrio 🥴';
+            statusText.style.color = '#fb7185';
+
+            // Sblocca la card vino al primo bicchiere
+            if (glassesOfWine === 1) {
+                const card = document.getElementById('story-wine');
+                card.classList.remove('locked');
+                
+                const badge = document.getElementById('badge-wine');
+                badge.innerText = 'Sbloccato!';
+                badge.style.background = '#9f1239';
+                badge.style.color = '#fff';
+
+                alert("🍷 Salute! Ora che la sobrietà è un lontano ricordo, puoi accedere ai racconti con il vino.");
+            }
+        }
+    </script>
+</body>
+</html>
