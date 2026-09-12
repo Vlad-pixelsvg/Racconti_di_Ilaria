@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Racconti Mancanti di Ilaria</title>
+    <title>Ilaria's Archives — Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b1120;
-            --card-bg: #1e293b;
-            --card-bg-hover: #334155;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --accent-wine: #be123c;
-            --accent-wine-light: #fb7185;
-            --accent-amber: #f59e0b;
-            --accent-green: #10b981;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --locked-overlay: rgba(15, 23, 42, 0.75);
+            --bg: #090d16;
+            --surface: #111827;
+            --surface-hover: #1f2937;
+            --border: #1f2937;
+            --border-focus: #374151;
+            
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.25);
+            --wine: #f43f5e;
+            --wine-glow: rgba(244, 63, 94, 0.25);
+            --success: #10b981;
+            --amber: #f59e0b;
+            
+            --text-main: #f9fafb;
+            --text-muted: #6b7280;
+            --text-sub: #9ca3af;
         }
 
         * {
@@ -32,278 +35,346 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             padding: 2rem 1rem;
-            min-height: 100vh;
-            position: relative;
         }
 
-        /* Overlay effetto sbronza leggero */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            box-shadow: inset 0 0 100px rgba(190, 18, 60, 0);
-            transition: box-shadow 0.5s ease;
-            z-index: 999;
-        }
-
-        body.tipsy::before {
-            box-shadow: inset 0 0 120px rgba(190, 18, 60, 0.35);
-        }
-
-        .container {
-            max-width: 850px;
+        .app-container {
+            max-width: 900px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        h1 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
-
-        /* Status Bar / Dashboard */
-        .controls-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        /* HEADER DASHBOARD */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            flex-wrap: wrap;
             gap: 1rem;
-            margin-bottom: 2rem;
         }
 
-        @media (max-width: 640px) {
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
+        .brand-title h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .widget {
-            background: var(--card-bg);
+        .brand-title p {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-add:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* METRICS GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 1.25rem;
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
-        .widget-header {
+        .metric-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            font-size: 0.825rem;
             font-weight: 600;
-            font-size: 0.9rem;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .xp-bar-bg {
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+        }
+
+        .metric-value span {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Progress Bars */
+        .progress-bar-bg {
             background: var(--bg);
-            height: 10px;
-            border-radius: 6px;
+            height: 8px;
+            border-radius: 4px;
             overflow: hidden;
             border: 1px solid var(--border);
         }
 
-        .xp-bar-fill {
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+        .progress-bar-fill {
             height: 100%;
+            background: var(--primary);
             width: 35%;
-            transition: width 0.4s ease;
+            transition: width 0.3s;
         }
 
-        .btn-action {
-            align-self: flex-start;
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid var(--accent-purple);
-            color: #c084fc;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
+        .btn-action-sm {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
             font-weight: 600;
-            transition: all 0.2s ease;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
         }
 
-        .btn-action:hover {
-            background: var(--accent-purple);
+        .btn-action-sm:hover {
+            border-color: var(--text-muted);
+        }
+
+        .btn-wine-sm {
+            color: var(--wine);
+        }
+
+        .btn-wine-sm:hover {
+            background: var(--wine);
             color: white;
-            transform: translateY(-2px);
+            border-color: var(--wine);
         }
 
-        .btn-wine {
-            background: rgba(251, 113, 133, 0.15);
-            border-color: var(--accent-wine-light);
-            color: var(--accent-wine-light);
-        }
-
-        .btn-wine:hover {
-            background: var(--accent-wine);
-            border-color: var(--accent-wine);
-            color: white;
-        }
-
-        .glasses-icons {
-            font-size: 1.1rem;
-            min-height: 1.5rem;
-        }
-
-        /* Filtri & Tab Navigazione */
-        .tabs {
+        /* FILTRI STATO */
+        .filters-bar {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 4px;
         }
 
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            cursor: pointer;
+        .chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
-            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
             transition: all 0.2s;
         }
 
-        .tab-btn.active {
-            background: var(--card-bg);
+        .chip.active, .chip:hover {
+            background: var(--surface-hover);
             color: var(--text-main);
-            border: 1px solid var(--border);
+            border-color: var(--text-muted);
         }
 
-        .section-title {
-            font-size: 1.2rem;
-            margin: 1.5rem 0 1rem 0;
+        /* FEED RACCONTI (CARDS SCHEMATICHE) */
+        .stories-feed {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-main);
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
-        /* Story Cards */
-        .story-card {
-            background: var(--card-bg);
+        .story-row {
+            background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            margin-bottom: 1rem;
+            border-radius: 12px;
             overflow: hidden;
-            transition: all 0.2s ease;
-            position: relative;
+            transition: all 0.2s;
         }
 
-        .story-card:not(.locked):hover {
-            border-color: #64748b;
-            transform: translateY(-2px);
+        .story-row:not(.locked):hover {
+            border-color: var(--border-focus);
+            background: var(--surface-hover);
         }
 
-        .story-header {
-            padding: 1.2rem;
-            cursor: pointer;
+        .story-main {
+            padding: 1rem 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 600;
+            cursor: pointer;
             gap: 1rem;
         }
 
-        .story-title {
+        .story-info {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            font-size: 0.98rem;
+            gap: 0.8rem;
         }
 
-        /* Badges */
-        .badge {
-            font-size: 0.75rem;
-            padding: 0.3rem 0.7rem;
-            border-radius: 20px;
+        .story-icon {
+            font-size: 1.2rem;
+            background: var(--bg);
+            padding: 0.4rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .story-title {
             font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .badge-locked { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
-        .badge-unlocked { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-        .badge-wine-req { background: rgba(251, 113, 133, 0.15); color: var(--accent-wine-light); }
-        .badge-archived { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
-
-        .story-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
-            background: rgba(0, 0, 0, 0.25);
-            color: #cbd5e1;
-            line-height: 1.6;
             font-size: 0.95rem;
         }
 
-        .story-content.open {
-            padding: 1.2rem;
-            max-height: 1000px;
+        /* Badges Minimal */
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap;
+        }
+
+        .badge-locked { background: rgba(107, 114, 128, 0.1); color: var(--text-muted); border-color: var(--border); }
+        .badge-ready { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
+        .badge-wine { background: rgba(244, 63, 94, 0.1); color: var(--wine); border-color: rgba(244, 63, 94, 0.2); }
+        .badge-archived { background: rgba(245, 158, 11, 0.1); color: var(--amber); border-color: rgba(245, 158, 11, 0.2); }
+
+        .story-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease-out, padding 0.25s ease;
+            background: var(--bg);
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .story-details.open {
+            padding: 1rem 1.25rem;
+            max-height: 400px;
             border-top: 1px solid var(--border);
         }
 
-        /* Stili Bloccati */
-        .story-card.locked {
-            border-style: dashed;
-            opacity: 0.75;
-        }
-
-        .story-card.locked .story-header {
-            cursor: pointer;
-        }
-
-        /* Toast Notifications */
-        #toast-container {
+        /* MODAL NUOVO RACCONTO */
+        .modal-overlay {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            z-index: 1000;
+            gap: 1.2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        .toast {
-            background: var(--card-bg);
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
+        .btn-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .form-control {
+            background: var(--bg);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 0.9rem 1.2rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
             font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            animation: slideIn 0.3s ease, fadeOut 0.3s ease 3.7s forwards;
-            max-width: 320px;
+            outline: none;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .form-control:focus {
+            border-color: var(--primary);
         }
 
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(10px); }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
         }
 
         .hidden { display: none !important; }
@@ -311,241 +382,334 @@
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>I racconti mancanti di Ilaria 📖</h1>
-            <p class="subtitle">Sblocca aneddoti, segreti e storie d'archivio aumentando l'amicizia (o i bicchieri a tavola).</p>
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="brand-title">
+                <h1>📖 Racconti di Ilaria</h1>
+                <p>Sistema di sblocco aneddoti e ricordi condivisi</p>
+            </div>
+            <button class="btn-add" onclick="openModal()">
+                <span>+</span> Nuovo Racconto
+            </button>
         </header>
 
-        <!-- DASHBOARD DASHBOARD -->
-        <div class="controls-grid">
-            <!-- Widget XP -->
-            <div class="widget">
-                <div class="widget-header">
-                    <span>Livello Amicizia: <strong id="lvl-text" style="color: var(--accent-pink);">Liv. 3</strong></span>
-                    <span id="xp-text" style="color: var(--text-muted);">350 / 1000 XP</span>
+        <!-- DASHBOARD STATUS -->
+        <div class="metrics-grid">
+            <!-- Metric 1: XP -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Livello Confidenza</span>
+                    <strong id="lvl-text" style="color: var(--primary);">Liv. 3</strong>
                 </div>
-                <div class="xp-bar-bg">
-                    <div class="xp-bar-fill" id="xp-bar"></div>
+                <div class="metric-value">
+                    <span id="xp-text">350</span> <span>/ 1000 XP</span>
                 </div>
-                <button class="btn-action" onclick="gainXP()">💬 Chiacchiera (+250 XP)</button>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="xp-bar"></div>
+                </div>
+                <button class="btn-action-sm" onclick="addXP()">💬 Chiacchiera con Ilaria (+250 XP)</button>
             </div>
 
-            <!-- Widget Sobrietà / Aperitivo -->
-            <div class="widget">
-                <div class="widget-header">
-                    <span>Stato: <strong id="sobriety-text" style="color: var(--accent-green);">Sobrio 😇</strong></span>
-                    <span id="glasses-text" style="color: var(--text-muted);">0 Bicchieri</span>
+            <!-- Metric 2: Vino -->
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>Livello Aperitivo</span>
+                    <strong id="sobriety-text" style="color: var(--success);">Sobrio</strong>
                 </div>
-                <div class="glasses-icons" id="glasses-icons"></div>
-                <button class="btn-action btn-wine" onclick="drinkWine()">🍷 Offri uno Spritz / Vino</button>
+                <div class="metric-value" id="wine-counter">
+                    0 <span>Bicchieri / Spritz</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="wine-bar" style="width: 0%; background: var(--wine);"></div>
+                </div>
+                <button class="btn-action-sm btn-wine-sm" onclick="addWine()">🍷 Offri un bicchiere di vino</button>
             </div>
         </div>
 
-        <!-- TABS NAVIGAZIONE -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('active-stories', this)">Storie da Sbloccare</button>
-            <button class="tab-btn" onclick="switchTab('archive-stories', this)">📁 Archivio (Già Raccontate)</button>
+        <!-- FILTRI -->
+        <div class="filters-bar">
+            <button class="chip active" onclick="filterFeed('all', this)">Tutti</button>
+            <button class="chip" onclick="filterFeed('unlocked', this)">🔓 Sbloccati</button>
+            <button class="chip" onclick="filterFeed('locked', this)">🔒 Da Sbloccare</button>
+            <button class="chip" onclick="filterFeed('archived', this)">📁 Archivio</button>
         </div>
 
-        <!-- SEZIONE 1: STORIE ATTIVE -->
-        <div id="active-stories">
+        <!-- LISTA RACCONTI (FEED) -->
+        <div class="stories-feed" id="stories-feed">
             
-            <!-- Categoria 1: Livello Amicizia -->
-            <div class="section-title">
-                <span>🔒</span>
-                <h3>Richiedono Confidenza</h3>
-            </div>
-
-            <div class="story-card locked" id="story-english" data-req-xp="1000">
-                <div class="story-header" onclick="handleCardClick('english')">
-                    <span class="story-title"><span>🇬🇧</span> Perché Ilaria non parla inglese anche se lo sa?</span>
-                    <span class="badge badge-locked" id="badge-english">Req. Liv. 5 (1000 XP)</span>
+            <!-- Story 1: XP Locked -->
+            <div class="story-row locked" data-status="locked" data-type="xp" data-req="1000">
+                <div class="story-main" onclick="toggleStoryRow(this, 'xp', 1000)">
+                    <div class="story-info">
+                        <span class="story-icon">🇬🇧</span>
+                        <span class="story-title">Perché Ilaria evita di parlare inglese?</span>
+                    </div>
+                    <span class="status-badge badge-locked">🔒 Req. 1000 XP (Liv. 5)</span>
                 </div>
-                <div class="story-content" id="content-english">
-                    <p><strong>[SBLOCCATO!]</strong> La verità è che Ilaria soffre della classica "Sindrome da Panic-English". Nella sua testa conosce la grammatica, ma appena sente un <i>"So, tell me about yourself..."</i>, la sua mente traduce tutto in panico. Preferisce il silenzio tattico al rischio di dire <i>"I am agree"</i>!</p>
+                <div class="story-details">
+                    <p>La verità è che Ilaria soffre della "Sindrome da Panic-English". Nella sua testa la grammatica è perfetta, ma appena le dicono <i>"So, tell me about yourself..."</i> la mente traduce tutto in dialetto o panico puro!</p>
                 </div>
             </div>
 
-            <!-- Categoria 2: Sbloccate di recente -->
-            <div class="section-title">
-                <span>💬</span>
-                <h3>Conversazioni Sbloccate</h3>
-            </div>
-
-            <div class="story-card">
-                <div class="story-header" onclick="toggleStory(this)">
-                    <span class="story-title"><span>🚂</span> Il disastro del viaggio a Milano</span>
-                    <span class="badge badge-unlocked">Disponibile</span>
+            <!-- Story 2: Disponibile -->
+            <div class="story-row" data-status="unlocked" data-type="free">
+                <div class="story-main" onclick="toggleStoryRow(this, 'free')">
+                    <div class="story-info">
+                        <span class="story-icon">🚂</span>
+                        <span class="story-title">Il disastro del viaggio a Milano del 19 Settembre</span>
+                    </div>
+                    <span class="status-badge badge-ready">✓ Disponibile</span>
                 </div>
-                <div class="story-content">
+                <div class="story-details">
                     <p>Una coincidenza persa e una serie di sfortunate decisioni. Quel viaggio si è trasformato in una maratona di sopravvivenza urbana tra ritardi Trenitalia e 4 caffè presi al volo per non crollare.</p>
                 </div>
             </div>
 
-            <!-- Categoria 3: Richiedono Vino/Spritz -->
-            <div class="section-title">
-                <span>🍷</span>
-                <h3>Aperitivo & Confidential</h3>
+            <!-- Story 3: Wine Locked -->
+            <div class="story-row locked" data-status="locked" data-type="wine" data-req="1">
+                <div class="story-main" onclick="toggleStoryRow(this, 'wine', 1)">
+                    <div class="story-info">
+                        <span class="story-icon">🍾</span>
+                        <span class="story-title">La teoria filosofica scritta sul tovagliolo</span>
+                    </div>
+                    <span class="status-badge badge-wine">🍷 Req. 1 Bicchiere</span>
+                </div>
+                <div class="story-details">
+                    <p>Qui le inibizioni cadono. Questo racconto contiene teorie sgangherate sull'universo e quella promessa fatta a fine serata: <i>"Dobbiamo assolutamente aprire un chiringuito insieme!"</i> che il giorno dopo viene puntualmente dimenticata.</p>
+                </div>
             </div>
 
-            <div class="story-card locked" id="story-wine" data-req-wine="1">
-                <div class="story-header" onclick="handleCardClick('wine')">
-                    <span class="story-title"><span>🍾</span> La teoria filosofica sul tovagliolo</span>
-                    <span class="badge badge-wine-req" id="badge-wine">Req. 1 Bicchieri</span>
+            <!-- Story 4: Archivio -->
+            <div class="story-row" data-status="archived" data-type="archived">
+                <div class="story-main" onclick="toggleStoryRow(this, 'archived')">
+                    <div class="story-info">
+                        <span class="story-icon">🌐</span>
+                        <span class="story-title">L'amico conosciuto su MSN nel 2008</span>
+                    </div>
+                    <span class="status-badge badge-archived">📁 Già Raccontato</span>
                 </div>
-                <div class="story-content" id="content-wine">
-                    <p><strong>[SBLOCCATO DALL'APERITIVO!]</strong> Qui le inibizioni cadono. Questo racconto contiene teorie sgangherate sull'universo e quella promessa fatta a fine serata: <i>"Dobbiamo assolutamente aprire un chiringuito in Portogallo!"</i> che il giorno dopo viene puntualmente dimenticata.</p>
+                <div class="story-details">
+                    <p><i>Raccontato durante la cena del mese scorso.</i><br>Una di quelle amicizie nate su internet, fatta di chat fino alle 3 di notte, trilli, squilli e tanta nostalgia dei primi anni 2000.</p>
                 </div>
             </div>
 
         </div>
-
-        <!-- SEZIONE 2: ARCHIVIO (GIÀ RACCONTATE) -->
-        <div id="archive-stories" class="hidden">
-            <div class="section-title">
-                <span>📁</span>
-                <h3>Storico Aneddoti Passati</h3>
-            </div>
-
-            <div class="story-card">
-                <div class="story-header" onclick="toggleStory(this)">
-                    <span class="story-title"><span>🌐</span> L'amico conosciuto su MSN nel 2008</span>
-                    <span class="badge badge-archived">Già Raccontato</span>
-                </div>
-                <div class="story-content">
-                    <p><i>Raccontato durante la cena del mese scorso.</i><br>Una di quelle amicizie nate su internet, fatta di chat fino alle 3 di notte con trilli e squilli, e quel pizzico di nostalgia dei primi anni 2000.</p>
-                </div>
-            </div>
-
-            <div class="story-card">
-                <div class="story-header" onclick="toggleStory(this)">
-                    <span class="story-title"><span>🍕</span> Il disastro della pizza fatta in casa</span>
-                    <span class="badge badge-archived">Già Raccontato</span>
-                </div>
-                <div class="story-content">
-                    <p><i>Raccontato al bar.</i><br>Quando Ilaria ha scambiato il lievito istantaneo per quello di birra e ha quasi fatto esplodere la cucina tentando di panificare di domenica sera.</p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Contenitore Notifiche Toast -->
-    <div id="toast-container"></div>
+    <!-- MODAL CREAZIONE NUOVO RACCONTO -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Aggiungi Nuovo Racconto</h3>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <form id="add-story-form" onsubmit="createNewStory(event)">
+                <div class="form-group">
+                    <label>Titolo del racconto</label>
+                    <input type="text" id="input-title" class="form-control" placeholder="Es. Quella volta al concerto..." required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Icona (Emoji)</label>
+                        <input type="text" id="input-icon" class="form-control" placeholder="Es. 🎸" maxlength="2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Requisito di Sblocco</label>
+                        <select id="input-type" class="form-control" onchange="updateReqInput()">
+                            <option value="free">Subito Disponibile</option>
+                            <option value="xp">XP (Confidenza)</option>
+                            <option value="wine">Vino / Spritz</option>
+                            <option value="archived">Già Raccontato (Archivio)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="req-val-group" style="display: none;">
+                    <label id="req-val-label">Valore Requisito</label>
+                    <input type="number" id="input-req-val" class="form-control" value="1000">
+                </div>
+
+                <div class="form-group">
+                    <label>Contenuto del racconto / Segreto</label>
+                    <textarea id="input-content" class="form-control" rows="4" placeholder="Scrivi qui la storia..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Aggiungi al Feed</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         // Stato Applicazione
         let currentXP = 350;
-        const requiredXP = 1000;
+        const maxXP = 1000;
         let glassesOfWine = 0;
 
-        // Toggle Accordion per storie sbloccate
-        function toggleStory(headerElement) {
-            const content = headerElement.nextElementSibling;
-            content.classList.toggle('open');
+        // Toggle Accordion per la riga
+        function toggleStoryRow(element, type, reqVal = 0) {
+            const parentRow = element.parentElement;
+            const details = parentRow.querySelector('.story-details');
+
+            // Controllo condizioni di sblocco
+            if (type === 'xp' && currentXP < reqVal) {
+                return; // Bloccato
+            }
+            if (type === 'wine' && glassesOfWine < reqVal) {
+                return; // Bloccato
+            }
+
+            details.classList.toggle('open');
         }
 
-        // Gestore click per storie con requisiti
-        function handleCardClick(type) {
-            if (type === 'english') {
-                if (currentXP < requiredXP) {
-                    showToast("🔒 Servono più punti amicizia! Chiacchiera con Ilaria per accumulare XP.");
-                } else {
-                    const content = document.getElementById('content-english');
-                    content.classList.toggle('open');
-                }
-            } else if (type === 'wine') {
-                if (glassesOfWine < 1) {
-                    showToast("🍷 Serve almeno 1 bicchiere di vino o uno spritz per sbloccare questa storia!");
-                } else {
-                    const content = document.getElementById('content-wine');
-                    content.classList.toggle('open');
-                }
+        // Aggiungi XP
+        function addXP() {
+            if (currentXP < maxXP) {
+                currentXP = Math.min(currentXP + 250, maxXP);
+                updateState();
             }
         }
 
-        // Incremento Esperienza
-        function gainXP() {
-            if (currentXP < requiredXP) {
-                currentXP += 250;
-                if (currentXP > requiredXP) currentXP = requiredXP;
-
-                const percentage = (currentXP / requiredXP) * 100;
-                document.getElementById('xp-bar').style.width = percentage + '%';
-                document.getElementById('xp-text').innerText = `${currentXP} / ${requiredXP} XP`;
-
-                if (currentXP >= requiredXP) {
-                    document.getElementById('lvl-text').innerText = 'Liv. 5 (Max)';
-                    
-                    const card = document.getElementById('story-english');
-                    card.classList.remove('locked');
-
-                    const badge = document.getElementById('badge-english');
-                    badge.innerText = 'Sbloccato!';
-                    badge.className = 'badge badge-unlocked';
-
-                    showToast("🎉 Livello 5 raggiunto! Nuova storia sbloccata.");
-                } else {
-                    showToast("💬 Avete chiacchierato! +250 XP Amicizia");
-                }
-            } else {
-                showToast("✨ Hai già raggiunto il massimo livello di confidenza!");
-            }
-        }
-
-        // Incremento Vino
-        function drinkWine() {
+        // Aggiungi Vino
+        function addWine() {
             glassesOfWine++;
-            document.getElementById('glasses-text').innerText = `${glassesOfWine} Bicchier${glassesOfWine === 1 ? 'e' : 'i'}`;
-            
-            // Icone bicchieri dinamiche
-            document.getElementById('glasses-icons').innerText = '🍷'.repeat(glassesOfWine);
+            updateState();
+        }
 
-            // Attiva effetto sbronza visivo
-            document.body.classList.add('tipsy');
+        // Aggiorna Interfaccia e Sblocca Contenuti
+        function updateState() {
+            // XP UI
+            document.getElementById('xp-text').innerText = currentXP;
+            document.getElementById('xp-bar').style.width = (currentXP / maxXP * 100) + '%';
+            if (currentXP >= maxXP) {
+                document.getElementById('lvl-text').innerText = 'Liv. 5 (Max)';
+            }
 
-            const statusText = document.getElementById('sobriety-text');
-            statusText.innerText = 'Allegro / ABrillo 🥴';
-            statusText.style.color = 'var(--accent-wine-light)';
+            // Wine UI
+            document.getElementById('wine-counter').innerHTML = `${glassesOfWine} <span>Bicchieri / Spritz</span>`;
+            document.getElementById('wine-bar').style.width = Math.min(glassesOfWine * 50, 100) + '%';
+            if (glassesOfWine >= 1) {
+                document.getElementById('sobriety-text').innerText = 'Allegro 🍷';
+                document.getElementById('sobriety-text').style.color = 'var(--wine)';
+            }
 
-            if (glassesOfWine === 1) {
-                const card = document.getElementById('story-wine');
-                card.classList.remove('locked');
+            // Check sblocchi dinamici sulle card
+            document.querySelectorAll('.story-row.locked').forEach(row => {
+                const type = row.getAttribute('data-type');
+                const req = parseInt(row.getAttribute('data-req'));
 
-                const badge = document.getElementById('badge-wine');
-                badge.innerText = 'Sbloccato!';
-                badge.className = 'badge badge-unlocked';
+                if ((type === 'xp' && currentXP >= req) || (type === 'wine' && glassesOfWine >= req)) {
+                    row.classList.remove('locked');
+                    row.setAttribute('data-status', 'unlocked');
+                    
+                    const badge = row.querySelector('.status-badge');
+                    badge.className = 'status-badge badge-ready';
+                    badge.innerText = '✓ Sbloccato!';
+                }
+            });
+        }
 
-                showToast("🍷 Salute! Storia dell'aperitivo sbloccata.");
+        // Filtri
+        function filterFeed(filter, btn) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.story-row').forEach(row => {
+                const status = row.getAttribute('data-status');
+                if (filter === 'all' || status === filter) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        // Gestione Modal
+        function openModal() {
+            document.getElementById('modal-overlay').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('open');
+        }
+
+        function updateReqInput() {
+            const type = document.getElementById('input-type').value;
+            const group = document.getElementById('req-val-group');
+            const label = document.getElementById('req-val-label');
+            const input = document.getElementById('input-req-val');
+
+            if (type === 'xp') {
+                group.style.display = 'flex';
+                label.innerText = 'XP Richiesti';
+                input.value = 1000;
+            } else if (type === 'wine') {
+                group.style.display = 'flex';
+                label.innerText = 'Bicchieri Richiesti';
+                input.value = 1;
             } else {
-                showToast("🥂 Un altro giro! La conversazione si fa interessante...");
+                group.style.display = 'none';
             }
         }
 
-        // Navigazione Tab (Storie Attive vs Archivio)
-        function switchTab(tabId, btnElement) {
-            document.getElementById('active-stories').classList.add('hidden');
-            document.getElementById('archive-stories').classList.add('hidden');
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.remove('hidden');
-            btnElement.classList.add('active');
-        }
+        // Creazione Dinamica Nuovo Racconto
+        function createNewStory(e) {
+            e.preventDefault();
 
-        // Sistema Notifiche Toast Custom
-        function showToast(message) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerText = message;
-            
-            container.appendChild(toast);
+            const title = document.getElementById('input-title').value;
+            const icon = document.getElementById('input-icon').value;
+            const type = document.getElementById('input-type').value;
+            const reqVal = parseInt(document.getElementById('input-req-val').value) || 0;
+            const content = document.getElementById('input-content').value;
 
-            setTimeout(() => {
-                toast.remove();
-            }, 4000);
+            let isLocked = false;
+            let status = 'unlocked';
+            let badgeClass = 'badge-ready';
+            let badgeText = '✓ Disponibile';
+
+            if (type === 'xp' && currentXP < reqVal) {
+                isLocked = true;
+                status = 'locked';
+                badgeClass = 'badge-locked';
+                badgeText = `🔒 Req. ${reqVal} XP`;
+            } else if (type === 'wine' && glassesOfWine < reqVal) {
+                isLocked = true;
+                status = 'locked';
+                badgeClass = 'badge-wine';
+                badgeText = `🍷 Req. ${reqVal} Bicchier${reqVal > 1 ? 'i' : 'e'}`;
+            } else if (type === 'archived') {
+                status = 'archived';
+                badgeClass = 'badge-archived';
+                badgeText = '📁 Già Raccontato';
+            }
+
+            const newRow = document.createElement('div');
+            newRow.className = `story-row ${isLocked ? 'locked' : ''}`;
+            newRow.setAttribute('data-status', status);
+            newRow.setAttribute('data-type', type);
+            if (isLocked) newRow.setAttribute('data-req', reqVal);
+
+            newRow.innerHTML = `
+                <div class="story-main" onclick="toggleStoryRow(this, '${type}', ${reqVal})">
+                    <div class="story-info">
+                        <span class="story-icon">${icon}</span>
+                        <span class="story-title">${title}</span>
+                    </div>
+                    <span class="status-badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="story-details">
+                    <p>${content}</p>
+                </div>
+            `;
+
+            document.getElementById('stories-feed').prepend(newRow);
+            
+            // Reset e chiusura
+            document.getElementById('add-story-form').reset();
+            updateReqInput();
+            closeModal();
         }
     </script>
 </body>
