@@ -3,20 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ilaria | Archivio Narrativo</title>
+  <title>Ilaria | Archivio Secretato</title>
   
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Google per estetica editoriale -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          colors: {
+            brand: {
+              bg: '#F0F4F8',
+              card: '#FFFFFF',
+              text: '#1E293B',
+              muted: '#64748B',
+              accent: '#0284C7',
+              accentLight: '#E0F2FE',
+              redacted: '#3B82F6',
+              border: '#CBD5E1'
+            }
+          },
           fontFamily: {
             serif: ['Newsreader', 'serif'],
             mono: ['JetBrains Mono', 'monospace'],
@@ -25,68 +34,84 @@
       }
     }
   </script>
+  <style>
+    .redacted {
+      background-color: #3B82F6;
+      color: transparent;
+      user-select: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      padding: 0 4px;
+      border-radius: 2px;
+    }
+    .redacted:hover {
+      background-color: #0284C7;
+      color: #FFFFFF;
+    }
+  </style>
 </head>
-<body class="bg-[#F7F4EF] text-[#111111] antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-brand-bg text-brand-text antialiased min-h-screen flex flex-col justify-between">
 
   <!-- HEADER EDITORIALE -->
-  <header class="border-b border-[#E0E0E0] bg-white">
-    <div class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
-      <h1 class="font-serif text-2xl font-bold tracking-tight">
-        ILARIA <span class="font-sans text-xs text-gray-400 font-normal">| ARCHIVIO NARRATIVO</span>
+  <header class="border-b border-brand-border bg-white sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+      <h1 class="font-serif text-2xl font-bold tracking-tight text-brand-text">
+        ILARIA <span class="font-mono text-xs text-brand-muted font-normal tracking-normal">| ARCHIVIO SECRETATO</span>
       </h1>
-      <nav class="font-mono text-xs space-x-6">
-        <a href="#archivio" class="hover:underline">01. INDICE</a>
-        <a href="#metodo" class="hover:underline">02. METODO</a>
-      </nav>
+      
+      <!-- BOTTONE ROULETTE / CASUALE -->
+      <button id="random-btn" class="font-mono text-xs bg-brand-accentLight text-brand-accent font-bold px-4 py-2 rounded-full border border-brand-accent/20 hover:bg-brand-accent hover:text-white transition-all flex items-center gap-2">
+        <span>✨</span> ESTRAI STORIA CASUALE
+      </button>
     </div>
   </header>
 
   <!-- HERO SECTION -->
-  <section class="max-w-4xl mx-auto px-6 py-16 text-center">
-    <h2 class="font-serif text-3xl md:text-4xl font-bold mb-4 leading-tight">
-      "Le storie di Ilaria (quelle che si possono dire, ed altre che richiedono un bicchiere)."
+  <section class="max-w-3xl mx-auto px-6 pt-12 pb-8 text-center">
+    <span class="inline-block bg-brand-accentLight text-brand-accent font-mono text-[11px] px-3 py-1 rounded-full uppercase tracking-wider mb-4 font-semibold">
+      Documenti riservati ad accesso libero
+    </span>
+    <h2 class="font-serif text-3xl md:text-4xl font-bold mb-4 leading-tight text-brand-text">
+      Cronache, decisioni dubbie e dettagli desegretati.
     </h2>
-    <p class="font-serif italic text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-      Alcune storie sono già scritte. Altre hanno bisogno di un calice di vino per uscire. Altre attendono che io viva abbastanza per poterle capire.
+    <p class="font-serif italic text-brand-muted text-base leading-relaxed">
+      Passa il mouse o tocca i <span class="redacted">blocchi azzurri</span> per rivelare le informazioni censurate dall'autrice.
     </p>
   </section>
 
-  <!-- FILTRI -->
-  <section id="archivio" class="max-w-6xl mx-auto px-6 mb-8">
-    <div class="flex flex-wrap gap-2 border-b border-[#E0E0E0] pb-4 font-mono text-xs">
-      <button data-filter="ALL" class="filter-btn px-3 py-1.5 bg-[#111111] text-white font-bold">TUTTE LE STORIE</button>
-      <button data-filter="unlocked" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">SBLOCCATE</button>
-      <button data-filter="told_verbally" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">RACCONTATE</button>
-      <button data-filter="locked_wine" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">RICHIESTO VINO</button>
-      <button data-filter="locked_experience" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">IN MATURAZIONE</button>
+  <!-- FILTRI MOOD -->
+  <section class="max-w-6xl mx-auto px-6 mb-8 w-full flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-xs text-brand-muted uppercase tracking-wider">Mood:</span>
+      <div id="mood-filters" class="flex flex-wrap gap-2 font-mono text-xs">
+        <button data-mood="ALL" class="mood-btn px-3 py-1.5 rounded-full bg-brand-text text-white font-medium transition-all">Tutti</button>
+        <button data-mood="Nostalgico" class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all">Nostalgico</button>
+        <button data-mood="Impulsivo" class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all">Impulsivo</button>
+        <button data-mood="Vergognoso" class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all">Vergognoso</button>
+        <button data-mood="Cinico" class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all">Cinico</button>
+      </div>
     </div>
   </section>
 
-  <!-- GRIGLIA CARDS DInAMICA -->
-  <main class="max-w-6xl mx-auto px-6 pb-24 w-full">
-    <div id="grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Le card verranno inserite qui da app.js -->
-    </div>
+  <!-- GRIGLIA CARDS -->
+  <main class="max-w-6xl mx-auto px-6 pb-20 w-full flex-grow">
+    <div id="grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
   </main>
 
-  <!-- MODALE -->
-  <div id="unlock-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white border border-[#111111] max-w-lg w-full p-8 relative shadow-2xl">
-      <button id="modal-close" class="absolute top-4 right-4 font-mono text-sm text-gray-500 hover:text-black">
-        [ X CHIUDI ]
+  <!-- MODALE DETTAGLIO STORIA -->
+  <div id="story-modal" class="fixed inset-0 bg-brand-text/40 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white border border-brand-border rounded-xl max-w-lg w-full p-8 relative shadow-xl">
+      <button id="modal-close" class="absolute top-4 right-4 font-mono text-xs text-brand-muted hover:text-brand-text">
+        [ ESC ]
       </button>
-      <div id="modal-content">
-        <!-- Il contenuto dinamico del modale verrà inserito da app.js -->
-      </div>
+      <div id="modal-content"></div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-[#E0E0E0] bg-white py-8 text-center font-mono text-xs text-gray-400">
-    © 2026 ILARIA NARRATIVE ARCHIVE — TUTTI I DIRITTI RISERVATI
+  <footer class="border-t border-brand-border bg-white py-6 text-center font-mono text-xs text-brand-muted">
+    © 2026 ILARIA NARRATIVE ARCHIVE — Documenti ad uso personale
   </footer>
 
-  <!-- SCRIPT LOCALI -->
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
