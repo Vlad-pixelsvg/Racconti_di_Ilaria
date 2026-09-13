@@ -79,9 +79,11 @@
     </p>
   </section>
 
-  <!-- FILTRI MOOD -->
-  <section class="max-w-6xl mx-auto px-6 mb-8 w-full flex flex-col md:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2">
+  <!-- FILTRI MOOD E STATO -->
+  <section class="max-w-6xl mx-auto px-6 mb-8 w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    
+    <!-- Filtro Mood -->
+    <div class="flex items-center gap-2 flex-wrap">
       <span class="font-mono text-xs text-brand-muted uppercase tracking-wider">Mood:</span>
       <div id="mood-filters" class="flex flex-wrap gap-2 font-mono text-xs">
         <button data-mood="ALL" class="mood-btn px-3 py-1.5 rounded-full bg-brand-text text-white font-medium transition-all">Tutti</button>
@@ -91,6 +93,18 @@
         <button data-mood="Cinico" class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all">Cinico</button>
       </div>
     </div>
+
+    <!-- Filtro Requisiti / Stato -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="font-mono text-xs text-brand-muted uppercase tracking-wider">Requisito:</span>
+      <div id="status-filters" class="flex flex-wrap gap-2 font-mono text-xs">
+        <button data-status="ALL" class="status-btn px-3 py-1.5 rounded-md bg-brand-text text-white font-medium transition-all">Tutti</button>
+        <button data-status="unlocked" class="status-btn px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all">✓ Lettura Libera</button>
+        <button data-status="locked_wine" class="status-btn px-3 py-1.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition-all">🍷 Vincolo Vino</button>
+        <button data-status="locked_inexperience" class="status-btn px-3 py-1.5 rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-all">🔒 Inesperienza</button>
+      </div>
+    </div>
+
   </section>
 
   <!-- GRIGLIA CARDS -->
