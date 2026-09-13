@@ -1,7 +1,7 @@
 const storieData = [
 
   {
-    id: "DOC-01",
+    id: "STORIA-01",
 
     title: "Palinsesti serali e maratone d'azione",
 
@@ -9,62 +9,50 @@ const storieData = [
 
     mood: "Nostalgico",
 
-    access: {
+    readingTime: "5 min",
+
+    requirement: {
       type: "free"
     },
 
-    readingTime: "5 min",
-
-    abstract: `
-      I miei punti fermi sullo schermo:
-      la profilazione di <span class="redacted">Criminal Minds</span>,
-      l'antropologia di <span class="redacted">Bones</span>
-      e le indagini di <span class="redacted">CSI: Scena del crimine</span>.
-      Sul fronte film, l'equilibrio oscilla tra la dolcezza de
-      <span class="redacted">L'amore non va in vacanza</span>
-      e l'adrenalina pura di
-      <span class="redacted">Fast & Furious</span>
-      e <span class="redacted">John Wick</span>.
-    `,
+    abstract:
+      "Ci sono cose che non considero semplicemente programmi televisivi. Sono diventate una specie di compagnia.",
 
     content: `
       <p>
-        Ci sono persone che hanno una playlist per ogni momento
-        della propria vita.
-        Io ho sempre avuto qualcosa di simile con le serie TV.
+        Ci sono quelle sere in cui non hai davvero voglia di scegliere
+        qualcosa da guardare. Vuoi soltanto qualcosa che conosci già.
       </p>
 
       <p>
-        Alcuni titoli sono diventati quasi dei punti di riferimento.
-        Non importa quante volte li abbia già visti:
-        quando ricompaiono sullo schermo è come tornare
-        in un posto che conosco.
+        Per me quel posto è stato occupato per molto tempo da
+        <span class="redacted">Criminal Minds</span>,
+        da <span class="redacted">Bones</span> e dalle indagini di
+        <span class="redacted">CSI: Scena del crimine</span>.
       </p>
 
       <p>
-        <span class="redacted">Criminal Minds</span>
-        è probabilmente uno degli esempi più evidenti.
-        Non saprei dire quante volte abbia seguito
-        quelle indagini.
+        Potrei probabilmente ricordare episodi interi soltanto da una
+        scena o da una battuta.
       </p>
 
       <p>
-        Poi ci sono i film.
-        Quelli che scegli quando vuoi stare tranquilla
-        e quelli che scegli quando invece vuoi semplicemente
-        vedere qualcosa esplodere.
+        E poi ci sono i film. Da una parte la dolcezza de
+        <span class="redacted">L'amore non va in vacanza</span>.
+        Dall'altra <span class="redacted">Fast & Furious</span> e
+        <span class="redacted">John Wick</span>.
       </p>
 
       <p>
-        In qualche modo, credo che i miei gusti televisivi
-        dicano parecchio di me.
+        Non è necessariamente buon gusto.
+        È semplicemente parte di me.
       </p>
     `
   },
 
 
   {
-    id: "DOC-02",
+    id: "STORIA-02",
 
     title: "La volta che ho confuso Marco con il cameriere",
 
@@ -72,114 +60,114 @@ const storieData = [
 
     mood: "Vergognoso",
 
-    access: {
+    readingTime: "4 min",
+
+    requirement: {
       type: "free"
     },
 
-    readingTime: "4 min",
-
-    abstract: `
-      È successo a <span class="redacted">Bologna</span>
-      nel 2022.
-      Credevo mi stesse portando il conto,
-      invece voleva il mio numero.
-    `,
+    abstract:
+      "Una delle situazioni in cui avrei voluto poter sparire semplicemente attraversando il pavimento.",
 
     content: `
       <p>
-        Questa è una di quelle storie che racconti soltanto
-        dopo aver verificato almeno tre volte
-        che la persona coinvolta non sia nella stanza.
+        È successo a <span class="redacted">Bologna</span> nel 2022.
       </p>
 
       <p>
-        Era il 2022.
-        Ero a <span class="redacted">Bologna</span>
-        e quella che sembrava una normalissima serata
-        ha deciso di trasformarsi in una delle situazioni
-        più imbarazzanti che mi siano mai capitate.
+        Ero convinta che la persona che si stava avvicinando al nostro
+        tavolo fosse il cameriere.
       </p>
 
       <p>
-        Lui si avvicina.
-        Io penso che sia un cameriere.
+        Quindi, con assoluta naturalezza, ho iniziato a chiedere
+        informazioni sul conto.
       </p>
 
       <p>
-        Il problema è che non era un cameriere.
+        Il problema è che non era il cameriere.
       </p>
 
       <p>
-        E la cosa peggiore è che me ne sono accorta
-        soltanto dopo avergli risposto come se mi stesse
-        chiedendo cosa volessi ordinare.
+        Era <span class="redacted">Marco</span>.
       </p>
 
       <p>
-        Alla fine voleva il mio numero.
-        Io avrei preferito ricevere direttamente il conto.
+        E, apparentemente, non era venuto al tavolo per parlare
+        del conto.
+      </p>
+
+      <p>
+        Voleva il mio numero.
+      </p>
+
+      <p>
+        Non ricordo esattamente cosa gli ho risposto.
+        Ricordo però perfettamente la sensazione di voler scomparire.
       </p>
     `
   },
 
 
   {
-    id: "DOC-03",
+    id: "STORIA-03",
 
-    title: "Perché non parlo mai del mio primo lavoro",
+    title: "Quello che ho imparato dal mio primo lavoro",
 
     category: "Carriera",
 
     mood: "Cinico",
 
-    access: {
-      type: "experience",
-      required: 2
-    },
-
     readingTime: "6 min",
 
-    abstract: `
-      Un resoconto sugli errori commessi quando non sapevo
-      ancora come ci si difende in un ufficio.
-    `,
+    requirement: {
+      type: "experience",
+      amount: 2
+    },
+
+    abstract:
+      "Alcune cose si imparano soltanto dopo aver fatto abbastanza errori.",
 
     content: `
       <p>
-        Prima di imparare come funzionano davvero
-        certe dinamiche lavorative,
-        ero convinta che bastasse fare bene il proprio lavoro.
+        Il primo lavoro ti insegna moltissime cose.
       </p>
 
       <p>
-        Spoiler:
-        non basta.
+        Alcune sono quelle che ti aspetti.
+        Altre assolutamente no.
       </p>
 
       <p>
-        Il mio primo lavoro mi ha insegnato una quantità
-        sorprendente di cose che nessun manuale avrebbe
-        potuto spiegarmi.
+        Io, per esempio, non sapevo ancora come ci si difende
+        in un ambiente di lavoro.
       </p>
 
       <p>
-        Ho imparato a riconoscere una promessa vaga.
-        Ho imparato la differenza tra una richiesta urgente
-        e una richiesta semplicemente organizzata male.
+        Pensavo che essere disponibili significasse dire sempre sì.
+        Pensavo che impegnarsi molto fosse sufficiente.
       </p>
 
       <p>
-        E soprattutto ho imparato che la frase
-        "siamo tutti una famiglia"
-        dovrebbe probabilmente far scattare
-        qualche campanello d'allarme.
+        Non lo era.
+      </p>
+
+      <p>
+        Ho imparato che esistono confini, persone difficili,
+        responsabilità che non sono tue e conversazioni che devi
+        imparare ad affrontare.
+      </p>
+
+      <p>
+        È una storia che preferisco raccontare soltanto a chi
+        ha già iniziato a conoscermi un po'.
       </p>
     `
   },
 
 
   {
-    id: "DOC-04",
+    id: "STORIA-04",
 
     title: "La verità sulla serata a Londra",
 
@@ -187,214 +175,235 @@ const storieData = [
 
     mood: "Impulsivo",
 
-    access: {
-      type: "wine",
-      required: 1
-    },
-
-    wineRequired: "1 bicchiere",
-
     readingTime: "8 min",
 
-    abstract: `
-      Dettagli che possono essere confessati soltanto
-      dopo una certa ora e il giusto livello di alcol.
-    `,
-
-    content: `
-      <p>
-        Cominciamo col dire che quella sera
-        nessuno aveva intenzione di fare qualcosa di memorabile.
-      </p>
-
-      <p>
-        Ed è probabilmente proprio questo il motivo
-        per cui è finita così.
-      </p>
-
-      <p>
-        Eravamo a <span class="redacted">Londra</span>.
-        Avevamo bevuto qualcosa.
-        Poi qualcos'altro.
-      </p>
-
-      <p>
-        A un certo punto qualcuno ha avuto un'idea.
-        Una pessima idea.
-      </p>
-
-      <p>
-        Io, invece di fermarlo,
-        ho deciso che era una buona idea partecipare.
-      </p>
-
-      <p>
-        Non entrerò nei dettagli senza prima aver verificato
-        che questo racconto sia effettivamente destinato
-        a persone di cui mi fido.
-      </p>
-
-      <p>
-        Diciamo soltanto che il giorno dopo
-        abbiamo ricostruito gli eventi attraverso fotografie,
-        messaggi e testimonianze incrociate.
-      </p>
-
-      <p>
-        E no.
-        Non è una metafora.
-      </p>
-    `
-  },
-
-
-  {
-    id: "DOC-05",
-
-    title: "La cosa che non avrei dovuto comprare",
-
-    category: "Decisioni",
-
-    mood: "Impulsivo",
-
-    access: {
-      type: "experience",
-      required: 3
+    requirement: {
+      type: "wine",
+      amount: 1
     },
 
-    readingTime: "5 min",
-
-    abstract: `
-      Un acquisto completamente irrazionale,
-      seguito da una settimana passata a convincermi
-      che fosse assolutamente necessario.
-    `,
+    abstract:
+      "Questa storia non è particolarmente difficile da raccontare. È difficile raccontarla completamente sobri.",
 
     content: `
       <p>
-        Tutto è cominciato con la frase:
-        "Costa poco, quindi al massimo..."
+        Londra.
       </p>
 
       <p>
-        Non esiste frase più pericolosa.
+        Una sera che doveva essere tranquilla e che,
+        per motivi che preferisco non spiegare subito,
+        ha preso una direzione completamente diversa.
       </p>
 
       <p>
-        Dopo circa venti minuti avevo già fatto l'acquisto.
+        C'era musica.
+        C'erano persone.
+        C'erano decisioni che sembravano ottime in quel momento.
       </p>
 
       <p>
-        Nei giorni successivi ho costruito una quantità
-        impressionante di giustificazioni per dimostrare
-        che quella cosa mi serviva davvero.
+        E poi c'era una quantità discutibile di
+        <span class="redacted">vino rosso</span>.
       </p>
 
       <p>
-        Non mi serviva.
+        Il resto preferisco raccontarlo davanti a un bicchiere.
       </p>
 
       <p>
-        Però ormai era mia.
+        È più coerente con la storia.
       </p>
     `
   },
 
 
   {
-    id: "DOC-06",
+    id: "STORIA-05",
 
-    title: "Una sera che doveva essere tranquilla",
+    title: "Una cosa che non ammetterò facilmente",
 
-    category: "Memorie",
+    category: "Confessioni",
 
     mood: "Vergognoso",
 
-    access: {
-      type: "experience",
-      required: 4
-    },
-
     readingTime: "7 min",
 
-    abstract: `
-      Una serata normale, un gruppo di persone
-      e una decisione che sembrava innocua.
-    `,
+    requirement: {
+      type: "experience",
+      amount: 4
+    },
+
+    abstract:
+      "Per arrivare qui bisogna aver già letto abbastanza di me.",
 
     content: `
       <p>
-        La cosa divertente è che avevo promesso
-        a me stessa che quella sera sarei stata tranquilla.
+        Questa è una di quelle storie che non racconterei
+        alla prima persona che incontro.
       </p>
 
       <p>
-        Nessuna decisione improvvisa.
-        Nessuna situazione strana.
-        A casa presto.
+        Non perché sia particolarmente grave.
       </p>
 
       <p>
-        Ovviamente non è andata così.
+        Semplicemente perché dice qualcosa di me che normalmente
+        preferisco nascondere.
       </p>
 
       <p>
-        Il resto della storia coinvolge
-        <span class="redacted">una persona</span>,
-        <span class="redacted">un messaggio</span>
-        e una quantità discutibile di fiducia.
+        Ho passato molto tempo a cercare di sembrare più sicura
+        di quanto fossi realmente.
+      </p>
+
+      <p>
+        E alcune delle mie decisioni peggiori sono nate proprio
+        dal tentativo di dimostrare qualcosa.
+      </p>
+
+      <p>
+        Questa è una di quelle.
       </p>
     `
   },
 
 
   {
-    id: "DOC-07",
+    id: "STORIA-06",
 
-    title: "Quella telefonata alle due di notte",
+    title: "Quella volta in cui avrei dovuto stare zitta",
+
+    category: "Aneddoti",
+
+    mood: "Cinico",
+
+    readingTime: "5 min",
+
+    requirement: {
+      type: "experience",
+      amount: 6
+    },
+
+    abstract:
+      "Una frase detta nel momento sbagliato può diventare una storia per anni.",
+
+    content: `
+      <p>
+        Ci sono momenti in cui il cervello dovrebbe semplicemente
+        premere il pulsante pausa.
+      </p>
+
+      <p>
+        Il mio, quel giorno, evidentemente non lo trovava.
+      </p>
+
+      <p>
+        Ho detto esattamente quello che pensavo.
+      </p>
+
+      <p>
+        Era sincero.
+        Era spontaneo.
+        Era completamente fuori luogo.
+      </p>
+
+      <p>
+        Il silenzio successivo è ancora oggi uno dei silenzi
+        più lunghi che io ricordi.
+      </p>
+    `
+  },
+
+
+  {
+    id: "STORIA-07",
+
+    title: "La storia che non avevo intenzione di raccontare",
 
     category: "Confessioni",
 
     mood: "Nostalgico",
 
-    access: {
-      type: "wine",
-      required: 1
+    readingTime: "10 min",
+
+    requirement: {
+      type: "experience",
+      amount: 10
     },
 
-    wineRequired: "1 bicchiere",
-
-    readingTime: "9 min",
-
-    abstract: `
-      Una telefonata arrivata nel momento peggiore possibile.
-      O forse in quello giusto.
-    `,
+    abstract:
+      "Questa è una di quelle storie che diventano più facili da raccontare con il tempo.",
 
     content: `
       <p>
-        Erano circa le due di notte.
+        Alcune persone entrano nella nostra vita senza che ce ne
+        accorgiamo immediatamente.
       </p>
 
       <p>
-        Il telefono ha iniziato a squillare.
+        Poi, quando guardiamo indietro, ci rendiamo conto che
+        hanno lasciato una traccia molto più grande di quanto
+        pensassimo.
       </p>
 
       <p>
-        Per qualche secondo ho pensato di ignorarlo.
+        Questa è una di quelle storie.
       </p>
 
       <p>
-        Poi ho visto chi stava chiamando.
+        E probabilmente è anche quella che racconta meglio
+        perché esiste questa raccolta.
+      </p>
+    `
+  },
+
+
+  {
+    id: "STORIA-08",
+
+    title: "Questa forse è meglio con due bicchieri",
+
+    category: "Segreti",
+
+    mood: "Impulsivo",
+
+    readingTime: "12 min",
+
+    requirement: {
+      type: "wine",
+      amount: 2
+    },
+
+    abstract:
+      "Non tutte le storie sono fatte per essere raccontate al primo bicchiere.",
+
+    content: `
+      <p>
+        Un bicchiere può aiutare a iniziare una conversazione.
       </p>
 
       <p>
-        E ho capito immediatamente che quella notte
-        non sarebbe finita come avevo previsto.
+        Due possono aiutare a finirla.
       </p>
 
       <p>
-        Il resto preferisco raccontarlo davanti a un bicchiere.
+        Questa storia appartiene decisamente alla seconda categoria.
+      </p>
+
+      <p>
+        Non ci sono grandi misteri.
+        Soltanto una serie di decisioni discutibili,
+        una notte molto lunga e una persona che,
+        probabilmente, non avrebbe dovuto essere lì.
+      </p>
+
+      <p>
+        Il resto...
+      </p>
+
+      <p>
+        ...te lo racconto dopo il secondo bicchiere.
       </p>
     `
   }
