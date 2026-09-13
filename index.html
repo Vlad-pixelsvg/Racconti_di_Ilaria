@@ -3,519 +3,337 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Ilaria | Archivio Secretato</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Ilaria — Cose che non ti avevo raccontato</title>
+
+  <meta
+    name="description"
+    content="Storie, ricordi, decisioni discutibili e cose che Ilaria forse non avrebbe dovuto raccontare."
+  >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              bg: '#F0F4F8',
-              card: '#FFFFFF',
-              text: '#1E293B',
-              muted: '#64748B',
-              accent: '#0284C7',
-              accentLight: '#E0F2FE',
-              redacted: '#3B82F6',
-              border: '#CBD5E1'
-            }
-          },
-
-          fontFamily: {
-            serif: ['Newsreader', 'serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-
-    /* ================================
-       TESTO CENSURATO
-       ================================ */
-
-    .redacted {
-      background-color: #3B82F6;
-      color: transparent;
-      user-select: none;
-      transition: all 0.25s ease;
-      cursor: pointer;
-      padding: 0 4px;
-      border-radius: 2px;
-    }
-
-    .redacted:hover {
-      background-color: #0284C7;
-      color: #FFFFFF;
-    }
-
-
-    /* ================================
-       CARD
-       ================================ */
-
-    .story-card {
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
-    }
-
-    .story-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-      border-color: #93C5FD;
-    }
-
-
-    /* ================================
-       CARD BLOCCATA
-       ================================ */
-
-    .story-card.locked {
-      background:
-        linear-gradient(
-          135deg,
-          rgba(248,250,252,0.95),
-          rgba(241,245,249,0.95)
-        );
-    }
-
-    .story-card.locked:hover {
-      transform: translateY(-2px);
-    }
-
-
-    /* ================================
-       OVERLAY BLOCCO
-       ================================ */
-
-    .lock-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #F1F5F9;
-      border: 1px solid #CBD5E1;
-      color: #64748B;
-    }
-
-
-    /* ================================
-       BARRA ESPERIENZA
-       ================================ */
-
-    .xp-track {
-      width: 100%;
-      height: 6px;
-      background: #E2E8F0;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .xp-bar {
-      height: 100%;
-      width: 0%;
-      background: #0284C7;
-      border-radius: 999px;
-      transition: width 0.5s ease;
-    }
-
-
-    /* ================================
-       ANIMAZIONE SBLOCCO
-       ================================ */
-
-    @keyframes unlockFlash {
-
-      0% {
-        box-shadow: 0 0 0 0 rgba(2,132,199,0);
-      }
-
-      50% {
-        box-shadow: 0 0 0 8px rgba(2,132,199,0.15);
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(2,132,199,0);
-      }
-
-    }
-
-    .just-unlocked {
-      animation: unlockFlash 1s ease;
-    }
-
-
-    /* ================================
-       MODALE
-       ================================ */
-
-    #story-modal {
-      transition: opacity 0.2s ease;
-    }
-
-    #story-modal .modal-box {
-      transform: translateY(10px);
-      transition: transform 0.2s ease;
-    }
-
-    #story-modal.modal-visible .modal-box {
-      transform: translateY(0);
-    }
-
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
+<body>
 
-<body class="bg-brand-bg text-brand-text antialiased min-h-screen flex flex-col">
+  <!-- CURSORE DECORATIVO -->
+  <div class="cursor-dot"></div>
 
+  <!-- HEADER -->
+  <header class="site-header">
 
-  <!-- =========================================
-       HEADER
-       ========================================= -->
-
-  <header class="border-b border-brand-border bg-white sticky top-0 z-40">
-
-    <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center gap-6">
-
-      <h1 class="font-serif text-2xl font-bold tracking-tight text-brand-text">
-
+    <a href="#" class="logo" aria-label="Torna all'inizio">
+      <span class="logo-symbol">✦</span>
+      <span>
         ILARIA
+        <small>PRIVATE STORIES</small>
+      </span>
+    </a>
 
-        <span class="font-mono text-xs text-brand-muted font-normal tracking-normal">
-          | ARCHIVIO SECRETATO
-        </span>
-
-      </h1>
-
-
-      <div class="flex items-center gap-3">
-
-        <!-- ESPERIENZA -->
-
-        <div class="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-50 border border-brand-border rounded-full">
-
-          <span class="font-mono text-[10px] text-brand-muted uppercase">
-            Esperienza
-          </span>
-
-          <strong
-            id="experience-value"
-            class="font-mono text-xs text-brand-accent"
-          >
-            0 XP
-          </strong>
-
-        </div>
-
-
-        <!-- VINO -->
-
-        <button
-          id="wine-btn"
-          title="Aggiungi un bicchiere di vino"
-          class="font-mono text-xs bg-amber-50 text-amber-800 border border-amber-200 px-3 py-2 rounded-full hover:bg-amber-100 transition"
-        >
-          🍷 <span id="wine-count">0</span>
-        </button>
-
-
-        <!-- RANDOM -->
-
-        <button
-          id="random-btn"
-          class="font-mono text-xs bg-brand-accentLight text-brand-accent font-bold px-4 py-2 rounded-full border border-brand-accent/20 hover:bg-brand-accent hover:text-white transition-all flex items-center gap-2"
-        >
-          <span>✨</span>
-          <span class="hidden sm:inline">
-            ESTRAI STORIA CASUALE
-          </span>
-          <span class="sm:hidden">
-            CASUALE
-          </span>
-        </button>
-
-      </div>
-
+    <div class="header-center">
+      <span>NO. 001</span>
+      <span class="header-separator">—</span>
+      <span>PERSONAL ARCHIVE</span>
     </div>
+
+    <button class="header-button" id="surprise-btn">
+      <span>SORPRENDIMI</span>
+      <span class="arrow">↗</span>
+    </button>
 
   </header>
 
 
+  <!-- HERO -->
+  <main>
 
-  <!-- =========================================
-       HERO
-       ========================================= -->
+    <section class="hero">
 
-  <section class="max-w-3xl mx-auto px-6 pt-12 pb-8 text-center">
+      <div class="hero-grid"></div>
 
-    <span
-      class="inline-block bg-brand-accentLight text-brand-accent font-mono text-[11px] px-3 py-1 rounded-full uppercase tracking-wider mb-4 font-semibold"
-    >
-      Documenti riservati ad accesso libero
-    </span>
+      <div class="hero-topline">
+        <span>PRIVATE RECORDS</span>
+        <span>EST. 2004</span>
+        <span>ACCESS: OPEN</span>
+      </div>
+
+      <div class="hero-content">
+
+        <div class="hero-label">
+          <span class="label-line"></span>
+          STORIE PERSONALI
+        </div>
+
+        <h1>
+          Cose che
+          <br>
+          <span>non ti avevo</span>
+          <br>
+          raccontato.
+        </h1>
+
+        <div class="hero-description">
+
+          <p>
+            Alcune sono vere.
+            Alcune sono leggermente
+            <span class="redacted">modificate.</span>
+          </p>
+
+          <p class="hero-note">
+            — Ilaria
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- DOCUMENTO DECORATIVO -->
+      <div class="hero-paper">
+
+        <div class="paper-header">
+          <span>PERSONAL NOTE</span>
+          <span>01 / 04</span>
+        </div>
+
+        <div class="paper-line"></div>
+
+        <p>
+          Non tutte le cose che ricordo
+          hanno necessariamente bisogno
+          di essere raccontate.
+        </p>
+
+        <p class="paper-handwritten">
+          ...ma ormai sei qui.
+        </p>
+
+        <div class="paper-stamp">
+          PRIVATE
+        </div>
+
+      </div>
+
+      <div class="hero-side-label">
+        SCROLL TO REMEMBER
+      </div>
+
+      <div class="hero-scroll">
+        <span>SCORRI</span>
+        <span class="scroll-line"></span>
+        <span>↓</span>
+      </div>
+
+    </section>
 
 
-    <h2 class="font-serif text-3xl md:text-4xl font-bold mb-4 leading-tight text-brand-text">
+    <!-- INTRO -->
+    <section class="intro-section">
 
-      Cronache, decisioni dubbie e dettagli desegretati.
+      <div class="section-number">01</div>
 
-    </h2>
+      <div class="intro-main">
+
+        <span class="eyebrow">UN PICCOLO AVVERTIMENTO</span>
+
+        <h2>
+          Non è un archivio.
+          <br>
+          <em>È la mia versione dei fatti.</em>
+        </h2>
+
+        <p>
+          Ci sono ricordi che raccontiamo cento volte,
+          altri che teniamo per noi e altri ancora che
+          diventano divertenti soltanto dopo qualche anno.
+        </p>
+
+        <p>
+          Questi sono alcuni di quelli che ho deciso
+          di lasciare qui.
+        </p>
+
+      </div>
+
+      <div class="intro-note">
+        <span>NOTE / 001</span>
+        <strong>
+          La memoria è una pessima testimone.
+        </strong>
+        <small>
+          Ma almeno sa raccontare bene le storie.
+        </small>
+      </div>
+
+    </section>
 
 
-    <p class="font-serif italic text-brand-muted text-base leading-relaxed">
+    <!-- STORIES -->
+    <section class="stories-section" id="storie">
 
-      Passa il mouse o tocca i
-      <span class="redacted">blocchi azzurri</span>
-      per rivelare le informazioni censurate dall'autrice.
+      <div class="stories-heading">
 
-    </p>
+        <div>
+          <span class="eyebrow">02 — LE STORIE</span>
 
+          <h2>
+            Da dove
+            <em>cominciamo?</em>
+          </h2>
+        </div>
 
-    <!-- PROGRESSO -->
-
-    <div class="max-w-md mx-auto mt-8 text-left">
-
-      <div class="flex justify-between items-center mb-2">
-
-        <span class="font-mono text-[9px] uppercase tracking-wider text-brand-muted">
-          Quanto ne sai di Ilaria
-        </span>
-
-        <span
-          id="experience-detail"
-          class="font-mono text-[9px] text-brand-accent"
-        >
-          0 XP
-        </span>
+        <div class="story-count">
+          <strong id="story-count">04</strong>
+          <span>STORIE</span>
+        </div>
 
       </div>
 
 
-      <div class="xp-track">
+      <!-- FILTRI -->
+      <div class="story-filters">
 
-        <div
-          id="experience-bar"
-          class="xp-bar"
-        ></div>
+        <span class="filter-label">FORSE TI INTERESSA:</span>
+
+        <button class="filter-btn active" data-mood="ALL">
+          TUTTO
+        </button>
+
+        <button class="filter-btn" data-mood="Nostalgico">
+          NOSTALGIA
+        </button>
+
+        <button class="filter-btn" data-mood="Impulsivo">
+          PESSIME IDEE
+        </button>
+
+        <button class="filter-btn" data-mood="Vergognoso">
+          FIGURACCE
+        </button>
+
+        <button class="filter-btn" data-mood="Cinico">
+          CINISMO
+        </button>
 
       </div>
 
 
-      <p
-        id="experience-message"
-        class="font-mono text-[9px] text-brand-muted mt-2 text-center"
-      >
-        Leggi le storie per scoprire qualcosa in più.
+      <!-- GRID -->
+      <div id="stories-grid" class="stories-grid"></div>
+
+    </section>
+
+
+    <!-- RANDOM STORY -->
+    <section class="random-section">
+
+      <div class="random-background-text">
+        TELL ME
+        <br>
+        SOMETHING
+      </div>
+
+      <div class="random-content">
+
+        <span class="eyebrow">NON SAI COSA LEGGERE?</span>
+
+        <h2>
+          Lascia scegliere
+          <br>
+          <em>a me.</em>
+        </h2>
+
+        <p>
+          Non prometto che sarà una buona scelta.
+        </p>
+
+        <button id="random-story-button" class="big-button">
+          <span>RACCONTAMI QUALCOSA</span>
+          <span>↗</span>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- FOOTER INTRO -->
+    <section class="closing-section">
+
+      <div class="closing-mark">✦</div>
+
+      <h2>
+        L'archivio
+        <br>
+        <em>non è mai completo.</em>
+      </h2>
+
+      <p>
+        Potrei aggiungere altre storie.
+        Potrei anche decidere di non farlo.
       </p>
 
-    </div>
-
-  </section>
-
-
-
-  <!-- =========================================
-       FILTRI
-       ========================================= -->
-
-  <section class="max-w-6xl mx-auto px-6 mb-8 w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-
-
-    <!-- MOOD -->
-
-    <div class="flex items-center gap-2 flex-wrap">
-
-      <span class="font-mono text-xs text-brand-muted uppercase tracking-wider">
-        Mood:
+      <span class="closing-signature">
+        — Ilaria
       </span>
 
-
-      <div
-        id="mood-filters"
-        class="flex flex-wrap gap-2 font-mono text-xs"
-      >
-
-        <button
-          data-mood="ALL"
-          class="mood-btn px-3 py-1.5 rounded-full bg-brand-text text-white font-medium transition-all"
-        >
-          Tutti
-        </button>
-
-
-        <button
-          data-mood="Nostalgico"
-          class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all"
-        >
-          Nostalgico
-        </button>
-
-
-        <button
-          data-mood="Impulsivo"
-          class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all"
-        >
-          Impulsivo
-        </button>
-
-
-        <button
-          data-mood="Vergognoso"
-          class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all"
-        >
-          Vergognoso
-        </button>
-
-
-        <button
-          data-mood="Cinico"
-          class="mood-btn px-3 py-1.5 rounded-full bg-white text-brand-muted border border-brand-border hover:border-brand-accent transition-all"
-        >
-          Cinico
-        </button>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- REQUISITO -->
-
-    <div class="flex items-center gap-2 flex-wrap">
-
-      <span class="font-mono text-xs text-brand-muted uppercase tracking-wider">
-        Requisito:
-      </span>
-
-
-      <div
-        id="status-filters"
-        class="flex flex-wrap gap-2 font-mono text-xs"
-      >
-
-        <button
-          data-status="ALL"
-          class="status-btn px-3 py-1.5 rounded-md bg-brand-text text-white font-medium transition-all"
-        >
-          Tutti
-        </button>
-
-
-        <button
-          data-status="unlocked"
-          class="status-btn px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all"
-        >
-          ✓ Lettura Libera
-        </button>
-
-
-        <button
-          data-status="locked_wine"
-          class="status-btn px-3 py-1.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition-all"
-        >
-          🍷 Vincolo Vino
-        </button>
-
-
-        <button
-          data-status="locked_inexperience"
-          class="status-btn px-3 py-1.5 rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-all"
-        >
-          🔒 Inesperienza
-        </button>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- =========================================
-       STORIE
-       ========================================= -->
-
-  <main class="max-w-6xl mx-auto px-6 pb-20 w-full flex-grow">
-
-    <div
-      id="grid-container"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-    ></div>
-
-
-    <div
-      id="empty-message"
-      class="hidden text-center py-16"
-    >
-
-      <p class="font-serif text-2xl text-brand-muted">
-        Nessuna storia corrisponde ai filtri.
-      </p>
-
-    </div>
+    </section>
 
   </main>
 
 
+  <!-- FOOTER -->
+  <footer class="site-footer">
 
-  <!-- =========================================
-       MODALE
-       ========================================= -->
-
-  <div
-    id="story-modal"
-    class="fixed inset-0 bg-brand-text/40 backdrop-blur-sm hidden items-center justify-center p-4 z-50 opacity-0"
-  >
-
-    <div class="modal-box bg-white border border-brand-border rounded-xl max-w-lg w-full p-8 relative shadow-xl max-h-[90vh] overflow-y-auto">
-
-
-      <button
-        id="modal-close"
-        class="absolute top-4 right-4 font-mono text-xs text-brand-muted hover:text-brand-text"
-      >
-        [ ESC ]
-      </button>
-
-
-      <div id="modal-content"></div>
-
+    <div>
+      <strong>ILARIA</strong>
+      <span>PRIVATE STORIES</span>
     </div>
 
-  </div>
+    <div>
+      NO. 001 — 2026
+    </div>
 
-
-
-  <!-- =========================================
-       FOOTER
-       ========================================= -->
-
-  <footer class="border-t border-brand-border bg-white py-6 text-center font-mono text-xs text-brand-muted">
-
-    © 2026 ILARIA NARRATIVE ARCHIVE — Documenti ad uso personale
+    <div>
+      MADE WITH TOO MANY MEMORIES
+    </div>
 
   </footer>
 
+
+  <!-- MODALE / RACCONTO -->
+  <div
+    id="story-modal"
+    class="story-modal"
+    aria-hidden="true"
+  >
+
+    <div class="modal-overlay"></div>
+
+    <article class="story-reader">
+
+      <button
+        id="modal-close"
+        class="modal-close"
+        aria-label="Chiudi storia"
+      >
+        <span>CHIUDI</span>
+        <strong>×</strong>
+      </button>
+
+      <div id="modal-content"></div>
+
+    </article>
+
+  </div>
 
 
   <script src="data.js"></script>
