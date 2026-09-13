@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
   }
-
   function renderGrid() {
     container.innerHTML = "";
     const filtered = storieData.filter(s => {
