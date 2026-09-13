@@ -1,28 +1,33 @@
-/* =========================================================
-   ILARIA — STORY ENGINE
-   ========================================================= */
-
-const STORAGE_KEY = "ilaria-story-progress";
+/* ==========================================================
+   ILARIA — NARRATIVE ENGINE
+   ========================================================== */
 
 
-/* ---------------------------------------------------------
-   STATO
-   --------------------------------------------------------- */
+/* ==========================================================
+   STATO DEL GIOCO
+   ========================================================== */
 
-let state = {
+const STORAGE_KEY = "ilaria_story_progress_v1";
+
+let gameState = {
+
   experience: 0,
-  readStories: [],
-  wine: 0
+
+  wine: 0,
+
+  readStories: []
+
 };
 
 
-/* ---------------------------------------------------------
+/* ==========================================================
    CARICAMENTO
-   --------------------------------------------------------- */
+   ========================================================== */
 
-function loadState() {
+function loadGame() {
 
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved =
+    localStorage.getItem(STORAGE_KEY);
 
   if (!saved) {
     return;
@@ -30,23 +35,24 @@ function loadState() {
 
   try {
 
-    const parsed = JSON.parse(saved);
+    const parsed =
+      JSON.parse(saved);
 
-    state.experience =
+    gameState.experience =
       Number(parsed.experience) || 0;
 
-    state.readStories =
+    gameState.wine =
+      Number(parsed.wine) || 0;
+
+    gameState.readStories =
       Array.isArray(parsed.readStories)
         ? parsed.readStories
         : [];
 
-    state.wine =
-      Number(parsed.wine) || 0;
-
   } catch (error) {
 
-    console.warn(
-      "Impossibile leggere i progressi salvati.",
+    console.error(
+      "Errore nel caricamento dei progressi:",
       error
     );
 
@@ -55,27 +61,29 @@ function loadState() {
 }
 
 
-/* ---------------------------------------------------------
+/* ==========================================================
    SALVATAGGIO
-   --------------------------------------------------------- */
+   ========================================================== */
 
-function saveState() {
+function saveGame() {
 
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify(state)
+    JSON.stringify(gameState)
   );
 
 }
 
 
-/* ---------------------------------------------------------
-   REQUISITI
-   --------------------------------------------------------- */
+/* ==========================================================
+   CONTROLLO SBLOCCO
+   ========================================================== */
 
-function isStoryUnlocked(story) {
+function isUnlocked(story) {
 
-  const requirement = story.requirement;
+  const requirement =
+    story.requirement;
+
 
   if (!requirement) {
     return true;
@@ -89,14 +97,20 @@ function isStoryUnlocked(story) {
 
   if (requirement.type === "experience") {
 
-    return state.experience >= requirement.amount;
+    return (
+      gameState.experience >=
+      requirement.amount
+    );
 
   }
 
 
   if (requirement.type === "wine") {
 
-    return state.wine >= requirement.amount;
+    return (
+      gameState.wine >=
+      requirement.amount
+    );
 
   }
 
@@ -106,19 +120,22 @@ function isStoryUnlocked(story) {
 }
 
 
-/* ---------------------------------------------------------
-   TESTO REQUISITO
-   --------------------------------------------------------- */
+/* ==========================================================
+   DESCRIZIONE DEL REQUISITO
+   ========================================================== */
 
-function getRequirementText(story) {
+function getRequirementLabel(story) {
 
-  const requirement = story.requirement;
+  const requirement =
+    story.requirement;
 
-  if (!requirement || requirement.type === "free") {
+
+  if (!requirement ||
+      requirement.type === "free") {
 
     return `
-      <span class="text-green-700">
-        ✓ STORIA DISPONIBILE
+      <span class="text-emerald-700">
+        ✓ LETTURA LIBERA
       </span>
     `;
 
@@ -130,21 +147,24 @@ function getRequirementText(story) {
     const missing =
       Math.max(
         0,
-        requirement.amount - state.experience
+        requirement.amount -
+        gameState.experience
       );
+
 
     if (missing === 0) {
 
       return `
-        <span class="text-green-700">
+        <span class="text-emerald-700">
           ✓ SBLOCCATA
         </span>
       `;
 
     }
 
+
     return `
-      <span>
+      <span class="text-slate-600">
         🔒 SERVONO ${missing} XP
       </span>
     `;
@@ -157,54 +177,113 @@ function getRequirementText(story) {
     const missing =
       Math.max(
         0,
-        requirement.amount - state.wine
+        requirement.amount -
+        gameState.wine
       );
+
 
     if (missing === 0) {
 
       return `
-        <span class="text-red">
+        <span class="text-amber-700">
           🍷 PRONTA DA RACCONTARE
         </span>
       `;
 
     }
 
+
     return `
-      <span>
+      <span class="text-amber-700">
         🍷 SERVONO ${missing}
-        ${missing === 1 ? "BICCHIERE" : "BICCHIERI"}
+        ${missing === 1
+          ? "BICCHIERE"
+          : "BICCHIERI"}
       </span>
     `;
 
   }
 
-  return "";
-
 }
 
 
-/* ---------------------------------------------------------
-   CARD STORIA
-   --------------------------------------------------------- */
+/* ==========================================================
+   CREA CARD
+   ========================================================== */
 
 function createStoryCard(story) {
 
   const unlocked =
-    isStoryUnlocked(story);
+    isUnlocked(story);
 
-  const alreadyRead =
-    state.readStories.includes(story.id);
+  const read =
+    gameState.readStories.includes(
+      story.id
+    );
 
 
   const card =
     document.createElement("article");
 
-  card.className =
-    `story-card ${
-      unlocked ? "" : "locked-card"
-    }`;
 
+  card.className = `
+    story-card
+    bg-white
+    border
+    border-brand-border
+    rounded-xl
+    p-6
+    flex
+    flex-col
+    justify-between
+    min-h-[360px]
+    ${!unlocked ? "locked" : ""}
+  `;
+
+
+  /* -------------------------------------------------------
+     REQUISITO
+     ------------------------------------------------------- */
+
+  let requirementBox = "";
+
+
+  if (!unlocked) {
+
+    requirementBox = `
+
+      <div class="mt-5 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+
+        <div class="flex items-center gap-3">
+
+          <div class="lock-icon">
+            🔒
+          </div>
+
+          <div>
+
+            <div class="font-mono text-[9px] uppercase text-brand-muted mb-1">
+              Requisito
+            </div>
+
+            <div class="font-mono text-[10px]">
+              ${getRequirementLabel(story)}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* -------------------------------------------------------
+     AZIONE
+     ------------------------------------------------------- */
 
   let action = "";
 
@@ -212,96 +291,98 @@ function createStoryCard(story) {
   if (unlocked) {
 
     action = `
+
       <button
-        class="open-story font-mono text-[10px] uppercase tracking-[0.1em] text-red hover:underline"
+        class="open-story font-mono text-[10px] text-brand-accent font-bold hover:underline"
         data-id="${story.id}"
       >
-        ${
-          alreadyRead
-            ? "Rileggi la storia →"
-            : "Leggi la storia →"
-        }
+        ${read
+          ? "↗ RILEGGI STORIA"
+          : "↗ APRI STORIA"}
       </button>
+
     `;
 
   } else {
 
     action = `
-      <span class="font-mono text-[10px] uppercase text-muted">
-        ${getRequirementText(story)}
+
+      <span class="font-mono text-[9px] text-brand-muted uppercase">
+        ${getRequirementLabel(story)}
       </span>
+
     `;
 
   }
 
 
-  const readBadge =
-    alreadyRead
-      ? `
-        <span class="font-mono text-[9px] uppercase text-green-700">
-          ✓ Già letta
-        </span>
-      `
-      : "";
-
+  /* -------------------------------------------------------
+     CARD HTML
+     ------------------------------------------------------- */
 
   card.innerHTML = `
 
     <div>
 
-      <div class="flex justify-between items-start mb-8">
+      <div class="flex items-center justify-between mb-5">
 
-        <span class="story-number">
+        <span class="font-mono text-[10px] text-brand-accent font-bold">
           ${story.id}
         </span>
 
-        <span class="font-mono text-[9px] uppercase text-muted">
+        <span class="font-mono text-[9px] text-brand-muted uppercase">
           ${story.category}
         </span>
 
       </div>
 
 
-      <h3 class="story-title mb-6">
+      <h3 class="font-serif text-2xl font-bold leading-tight mb-4">
         ${story.title}
       </h3>
 
 
-      <p class="story-abstract">
+      <p class="font-serif text-base leading-relaxed text-brand-muted">
         ${story.abstract}
       </p>
 
 
-      ${
-        !unlocked
-          ? `
-            <div class="lock-box">
-              ${getRequirementText(story)}
-            </div>
-          `
-          : ""
-      }
+      ${requirementBox}
 
     </div>
 
 
-    <div class="story-footer">
+    <div class="mt-8 pt-4 border-t border-brand-border flex items-end justify-between gap-4">
 
-      <div class="flex flex-col gap-1">
+      <div>
 
-        <span class="font-mono text-[9px] uppercase text-muted">
+        <div class="font-mono text-[9px] text-brand-muted uppercase mb-1">
+          Mood
+        </div>
+
+        <div class="font-mono text-[10px]">
           ${story.mood}
-        </span>
-
-        <span class="font-mono text-[9px] text-muted">
-          ${story.readingTime}
-        </span>
-
-        ${readBadge}
+        </div>
 
       </div>
 
-      ${action}
+
+      <div>
+
+        <div class="font-mono text-[9px] text-brand-muted uppercase mb-1">
+          Lettura
+        </div>
+
+        <div class="font-mono text-[10px]">
+          ${story.readingTime}
+        </div>
+
+      </div>
+
+
+      <div class="ml-auto">
+        ${action}
+      </div>
 
     </div>
 
@@ -313,52 +394,116 @@ function createStoryCard(story) {
 }
 
 
-/* ---------------------------------------------------------
-   RENDER STORIE
-   --------------------------------------------------------- */
+/* ==========================================================
+   RENDER
+   ========================================================== */
 
-function renderStories(mood = "ALL") {
+let currentMood = "ALL";
+let currentStatus = "ALL";
+
+
+function renderStories() {
 
   const container =
-    document.getElementById("grid-container");
+    document.getElementById(
+      "grid-container"
+    );
 
-  const emptyMessage =
-    document.getElementById("empty-message");
+  const empty =
+    document.getElementById(
+      "empty-message"
+    );
 
 
   container.innerHTML = "";
 
 
-  const filteredStories =
+  const filtered =
     storieData.filter(story => {
 
-      if (mood === "ALL") {
-        return true;
+
+      /* MOOD */
+
+      if (
+        currentMood !== "ALL" &&
+        story.mood !== currentMood
+      ) {
+
+        return false;
+
       }
 
-      return story.mood === mood;
+
+      /* STATUS */
+
+      if (
+        currentStatus !== "ALL"
+      ) {
+
+        if (
+          currentStatus === "unlocked" &&
+          !isUnlocked(story)
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          currentStatus === "locked_wine" &&
+          !(
+            story.requirement &&
+            story.requirement.type === "wine"
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          currentStatus === "locked_inexperience" &&
+          !(
+            story.requirement &&
+            story.requirement.type === "experience"
+          )
+        ) {
+
+          return false;
+
+        }
+
+      }
+
+
+      return true;
 
     });
 
 
-  if (filteredStories.length === 0) {
+  if (filtered.length === 0) {
 
-    emptyMessage.classList.remove("hidden");
+    empty.classList.remove(
+      "hidden"
+    );
 
     return;
 
   }
 
 
-  emptyMessage.classList.add("hidden");
+  empty.classList.add(
+    "hidden"
+  );
 
 
-  filteredStories.forEach(story => {
+  filtered.forEach(story => {
 
-    const card =
-      createStoryCard(story);
-
-    container.appendChild(card);
+    container.appendChild(
+      createStoryCard(story)
+    );
 
   });
 
@@ -368,9 +513,9 @@ function renderStories(mood = "ALL") {
 }
 
 
-/* ---------------------------------------------------------
+/* ==========================================================
    BOTTONI STORIE
-   --------------------------------------------------------- */
+   ========================================================== */
 
 function attachStoryButtons() {
 
@@ -382,10 +527,9 @@ function attachStoryButtons() {
         "click",
         () => {
 
-          const id =
-            button.dataset.id;
-
-          openStory(id);
+          openStory(
+            button.dataset.id
+          );
 
         }
       );
@@ -395,9 +539,9 @@ function attachStoryButtons() {
 }
 
 
-/* ---------------------------------------------------------
-   APERTURA STORIA
-   --------------------------------------------------------- */
+/* ==========================================================
+   APRI STORIA
+   ========================================================== */
 
 function openStory(id) {
 
@@ -412,172 +556,146 @@ function openStory(id) {
   }
 
 
-  if (!isStoryUnlocked(story)) {
+  if (!isUnlocked(story)) {
 
-    alert(
-      getLockedMessage(story)
-    );
+    showLockedMessage(story);
 
     return;
 
   }
 
 
-  /*
-   * Il vino viene consumato
-   * solo quando la storia viene aperta.
-   */
-
-  if (
-    story.requirement &&
-    story.requirement.type === "wine" &&
-    !state.readStories.includes(story.id)
-  ) {
-
-    state.wine =
-      Math.max(
-        0,
-        state.wine - story.requirement.amount
-      );
-
-  }
-
-
-  /*
-   * La prima lettura assegna esperienza.
-   */
-
-  if (
-    !state.readStories.includes(story.id)
-  ) {
-
-    state.readStories.push(
+  const alreadyRead =
+    gameState.readStories.includes(
       story.id
     );
 
-    state.experience += 1;
+
+  /* -------------------------------------------------------
+     VINO
+     ------------------------------------------------------- */
+
+  if (
+    !alreadyRead &&
+    story.requirement &&
+    story.requirement.type === "wine"
+  ) {
+
+    gameState.wine -=
+      story.requirement.amount;
 
   }
 
 
-  saveState();
+  /* -------------------------------------------------------
+     ESPERIENZA
+     ------------------------------------------------------- */
+
+  if (!alreadyRead) {
+
+    gameState.readStories.push(
+      story.id
+    );
+
+    gameState.experience += 1;
+
+  }
+
+
+  saveGame();
 
   updateInterface();
 
-  showModal(story);
+  showStoryModal(story);
 
 }
 
 
-/* ---------------------------------------------------------
-   MESSAGGIO BLOCCO
-   --------------------------------------------------------- */
+/* ==========================================================
+   MODALE STORIA
+   ========================================================== */
 
-function getLockedMessage(story) {
-
-  const requirement =
-    story.requirement;
-
-
-  if (
-    requirement.type === "experience"
-  ) {
-
-    const missing =
-      requirement.amount -
-      state.experience;
-
-    return `
-      Questa storia non è ancora pronta.
-
-      Ti mancano ${missing} ${
-        missing === 1
-          ? "storia letta"
-          : "storie lette"
-      } per guadagnare abbastanza esperienza.
-    `;
-
-  }
-
-
-  if (
-    requirement.type === "wine"
-  ) {
-
-    const missing =
-      requirement.amount -
-      state.wine;
-
-    return `
-      Questa storia richiede
-      ${requirement.amount} ${
-        requirement.amount === 1
-          ? "bicchiere"
-          : "bicchieri"
-      } di vino.
-
-      Te ne ${
-        missing === 1
-          ? "manca ancora uno"
-          : `mancano ancora ${missing}`
-      }.
-    `;
-
-  }
-
-
-  return "Questa storia è ancora bloccata.";
-
-}
-
-
-/* ---------------------------------------------------------
-   MODALE
-   --------------------------------------------------------- */
-
-function showModal(story) {
+function showStoryModal(story) {
 
   const modal =
-    document.getElementById("story-modal");
+    document.getElementById(
+      "story-modal"
+    );
 
 
-  document.getElementById(
-    "modal-category"
-  ).textContent =
-    story.category;
+  const content =
+    document.getElementById(
+      "modal-content"
+    );
 
 
-  document.getElementById(
-    "modal-id"
-  ).textContent =
-    story.id;
+  content.innerHTML = `
+
+    <div class="mb-6">
+
+      <div class="flex justify-between items-center gap-4">
+
+        <span class="font-mono text-[10px] text-brand-accent uppercase tracking-wider">
+          ${story.category}
+        </span>
+
+        <span class="font-mono text-[9px] text-brand-muted">
+          ${story.id}
+        </span>
+
+      </div>
+
+    </div>
 
 
-  document.getElementById(
-    "modal-title"
-  ).innerHTML =
-    story.title;
+    <h2 class="font-serif text-4xl font-bold leading-tight mb-6">
+      ${story.title}
+    </h2>
 
 
-  document.getElementById(
-    "modal-body"
-  ).innerHTML =
-    story.content;
+    <div class="font-serif text-lg leading-relaxed text-slate-600 space-y-5">
+
+      ${story.content}
+
+    </div>
 
 
-  document.getElementById(
-    "modal-mood"
-  ).textContent =
-    `Mood: ${story.mood}`;
+    <div class="mt-8 pt-5 border-t border-brand-border flex justify-between">
+
+      <span class="font-mono text-[9px] text-brand-muted uppercase">
+        Mood: ${story.mood}
+      </span>
+
+      <span class="font-mono text-[9px] text-brand-muted uppercase">
+        ${story.readingTime}
+      </span>
+
+    </div>
+
+  `;
 
 
-  document.getElementById(
-    "modal-reading-time"
-  ).textContent =
-    story.readingTime;
+  modal.classList.remove(
+    "hidden"
+  );
+
+  modal.classList.add(
+    "flex"
+  );
 
 
-  modal.classList.add("open");
+  requestAnimationFrame(() => {
+
+    modal.classList.add(
+      "modal-visible"
+    );
+
+    modal.classList.remove(
+      "opacity-0"
+    );
+
+  });
+
 
   document.body.style.overflow =
     "hidden";
@@ -585,16 +703,39 @@ function showModal(story) {
 }
 
 
-/* ---------------------------------------------------------
-   CHIUSURA MODALE
-   --------------------------------------------------------- */
+/* ==========================================================
+   CHIUDI MODALE
+   ========================================================== */
 
 function closeModal() {
 
   const modal =
-    document.getElementById("story-modal");
+    document.getElementById(
+      "story-modal"
+    );
 
-  modal.classList.remove("open");
+
+  modal.classList.remove(
+    "modal-visible"
+  );
+
+  modal.classList.add(
+    "opacity-0"
+  );
+
+
+  setTimeout(() => {
+
+    modal.classList.remove(
+      "flex"
+    );
+
+    modal.classList.add(
+      "hidden"
+    );
+
+  }, 200);
+
 
   document.body.style.overflow =
     "";
@@ -643,37 +784,107 @@ document.addEventListener(
 );
 
 
-/* ---------------------------------------------------------
-   FILTRI
-   --------------------------------------------------------- */
+/* ==========================================================
+   MESSAGGIO STORIA BLOCCATA
+   ========================================================== */
+
+function showLockedMessage(story) {
+
+  const requirement =
+    story.requirement;
+
+
+  if (
+    requirement.type ===
+    "experience"
+  ) {
+
+    const missing =
+      requirement.amount -
+      gameState.experience;
+
+
+    alert(
+      `Questa storia è ancora secretata.\n\n` +
+      `Ti servono ancora ${missing} ` +
+      `${missing === 1 ? "XP" : "XP"} ` +
+      `per conoscerla.`
+    );
+
+    return;
+
+  }
+
+
+  if (
+    requirement.type ===
+    "wine"
+  ) {
+
+    const missing =
+      requirement.amount -
+      gameState.wine;
+
+
+    alert(
+      `Questa storia richiede vino.\n\n` +
+      `Ti ${
+        missing === 1
+          ? "serve ancora 1 bicchiere"
+          : `servono ancora ${missing} bicchieri`
+      }.`
+    );
+
+  }
+
+}
+
+
+/* ==========================================================
+   FILTRO MOOD
+   ========================================================== */
 
 document
-  .querySelectorAll(".filter-btn")
+  .querySelectorAll(".mood-btn")
   .forEach(button => {
 
     button.addEventListener(
       "click",
       () => {
 
+        currentMood =
+          button.dataset.mood;
+
+
         document
-          .querySelectorAll(".filter-btn")
+          .querySelectorAll(".mood-btn")
           .forEach(btn => {
 
             btn.classList.remove(
-              "active"
+              "bg-brand-text",
+              "text-white"
+            );
+
+            btn.classList.add(
+              "bg-white",
+              "text-brand-muted"
             );
 
           });
 
 
+        button.classList.remove(
+          "bg-white",
+          "text-brand-muted"
+        );
+
         button.classList.add(
-          "active"
+          "bg-brand-text",
+          "text-white"
         );
 
 
-        renderStories(
-          button.dataset.mood
-        );
+        renderStories();
 
       }
     );
@@ -681,199 +892,281 @@ document
   });
 
 
-/* ---------------------------------------------------------
-   AGGIUNGI VINO
-   ---------------------------------------------------------
+/* ==========================================================
+   FILTRO REQUISITI
+   ========================================================== */
 
-   Per ora è un sistema di test.
-   Successivamente possiamo trasformarlo
-   in una vera interazione narrativa.
-   --------------------------------------------------------- */
+document
+  .querySelectorAll(".status-btn")
+  .forEach(button => {
 
-function addWine() {
+    button.addEventListener(
+      "click",
+      () => {
 
-  state.wine += 1;
-
-  saveState();
-
-  updateInterface();
-
-}
+        currentStatus =
+          button.dataset.status;
 
 
-/*
- * Per aggiungere un bicchiere da console:
- *
- * addWine()
- *
- * In futuro possiamo creare un pulsante
- * "Versa un bicchiere" direttamente nella UI.
- */
+        document
+          .querySelectorAll(".status-btn")
+          .forEach(btn => {
+
+            btn.classList.remove(
+              "bg-brand-text",
+              "text-white"
+            );
+
+            btn.classList.add(
+              "bg-white",
+              "text-brand-muted"
+            );
+
+          });
 
 
-/* ---------------------------------------------------------
-   INTERFACCIA
-   --------------------------------------------------------- */
+        button.classList.remove(
+          "bg-white",
+          "text-brand-muted"
+        );
+
+        button.classList.add(
+          "bg-brand-text",
+          "text-white"
+        );
+
+
+        renderStories();
+
+      }
+    );
+
+  });
+
+
+/* ==========================================================
+   VINO
+   ========================================================== */
+
+document
+  .getElementById("wine-btn")
+  .addEventListener(
+    "click",
+    () => {
+
+      gameState.wine += 1;
+
+      saveGame();
+
+      updateInterface();
+
+    }
+  );
+
+
+/* ==========================================================
+   AGGIORNAMENTO INTERFACCIA
+   ========================================================== */
 
 function updateInterface() {
 
   const xp =
-    state.experience;
+    gameState.experience;
 
 
   document.getElementById(
     "experience-value"
   ).textContent =
-    xp;
+    `${xp} XP`;
 
 
   document.getElementById(
-    "xp-current"
+    "experience-detail"
   ).textContent =
-    xp;
+    `${xp} XP`;
 
 
   document.getElementById(
     "wine-count"
   ).textContent =
-    state.wine;
+    gameState.wine;
 
 
   /*
-   * Trova il prossimo livello.
+   * Il massimo attuale è 10 XP.
+   * Possiamo aumentarlo facilmente aggiungendo
+   * nuove soglie.
    */
 
-  const levels = [
-    0,
-    2,
-    4,
-    6,
-    10
-  ];
+  const maxXP = 10;
 
 
-  let nextLevel =
-    levels.find(
-      level => level > xp
+  const percentage =
+    Math.min(
+      100,
+      (xp / maxXP) * 100
     );
 
 
-  if (!nextLevel) {
-    nextLevel = xp;
-  }
-
-
   document.getElementById(
-    "xp-next"
-  ).textContent =
-    nextLevel;
+    "experience-bar"
+  ).style.width =
+    `${percentage}%`;
 
 
-  /*
-   * Percentuale progressione.
-   */
+  /* Messaggio */
 
-  const previousLevel =
-    levels
-      .filter(level => level <= xp)
-      .pop() || 0;
+  const message =
+    document.getElementById(
+      "experience-message"
+    );
 
 
-  let percentage;
+  if (xp === 0) {
 
+    message.textContent =
+      "Leggi le storie per scoprire qualcosa in più.";
 
-  if (nextLevel === xp) {
+  } else if (xp < 2) {
 
-    percentage = 100;
+    message.textContent =
+      "Hai appena iniziato a conoscermi.";
+
+  } else if (xp < 4) {
+
+    message.textContent =
+      "Stai iniziando a capire come funziono.";
+
+  } else if (xp < 6) {
+
+    message.textContent =
+      "Ora cominci a conoscere le parti meno evidenti.";
+
+  } else if (xp < 10) {
+
+    message.textContent =
+      "Sei arrivato abbastanza lontano.";
 
   } else {
 
-    percentage =
-      (
-        (xp - previousLevel) /
-        (nextLevel - previousLevel)
-      ) * 100;
+    message.textContent =
+      "Ormai sai parecchie cose su di me.";
 
   }
 
 
-  document.getElementById(
-    "experience-progress"
-  ).style.width =
-    `${Math.min(100, percentage)}%`;
-
-
-  /*
-   * Mantiene il filtro corrente.
-   */
-
-  const activeFilter =
-    document.querySelector(
-      ".filter-btn.active"
-    );
-
-
-  const currentMood =
-    activeFilter
-      ? activeFilter.dataset.mood
-      : "ALL";
-
-
-  renderStories(currentMood);
+  renderStories();
 
 }
 
 
-/* ---------------------------------------------------------
-   AVVIO
-   --------------------------------------------------------- */
+/* ==========================================================
+   STORIA CASUALE
+   ========================================================== */
 
-loadState();
+document
+  .getElementById("random-btn")
+  .addEventListener(
+    "click",
+    () => {
+
+      const available =
+        storieData.filter(
+          story =>
+            isUnlocked(story)
+        );
+
+
+      if (!available.length) {
+        return;
+      }
+
+
+      const randomStory =
+        available[
+          Math.floor(
+            Math.random() *
+            available.length
+          )
+        ];
+
+
+      openStory(
+        randomStory.id
+      );
+
+    }
+  );
+
+
+/* ==========================================================
+   AVVIO
+   ========================================================== */
+
+loadGame();
 
 updateInterface();
 
 
-/* ---------------------------------------------------------
-   DEBUG / TEST
-   ---------------------------------------------------------
+/* ==========================================================
+   FUNZIONI DI TEST
+   ==========================================================
 
-   Queste funzioni sono volutamente esposte
-   nel browser per facilitare il test.
-   --------------------------------------------------------- */
+   Aprendo la console del browser puoi utilizzare:
+
+   ilaria.addXP(1)
+   ilaria.addWine()
+   ilaria.reset()
+
+   ========================================================== */
 
 window.ilaria = {
 
-  getState() {
-    return state;
-  },
+  addXP(amount = 1) {
 
-  addWine() {
-    addWine();
-  },
+    gameState.experience +=
+      Number(amount);
 
-  addExperience(amount = 1) {
-
-    state.experience += amount;
-
-    saveState();
+    saveGame();
 
     updateInterface();
 
   },
+
+
+  addWine() {
+
+    gameState.wine += 1;
+
+    saveGame();
+
+    updateInterface();
+
+  },
+
 
   reset() {
 
-    localStorage.removeItem(
-      STORAGE_KEY
-    );
+    gameState = {
 
-    state = {
       experience: 0,
-      readStories: [],
-      wine: 0
+
+      wine: 0,
+
+      readStories: []
+
     };
 
+    saveGame();
+
     updateInterface();
+
+  },
+
+
+  getState() {
+
+    return gameState;
 
   }
 
