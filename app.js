@@ -1,487 +1,1563 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-  const grid = document.getElementById("stories-grid");
-  const storyCount = document.getElementById("story-count");
-
-  const modal = document.getElementById("story-modal");
-  const modalContent = document.getElementById("modal-content");
-  const modalClose = document.getElementById("modal-close");
-  const modalOverlay = document.querySelector(".modal-overlay");
-
-  const surpriseButton = document.getElementById("surprise-btn");
-  const randomStoryButton = document.getElementById("random-story-button");
-
-  const filterButtons = document.querySelectorAll(".filter-btn");
-
-  let currentMood = "ALL";
+/* ============================================================
+   ILARIA — PRIVATE STORIES
+   Interactive narrative engine
+============================================================ */
 
 
-  /* -----------------------------------------
-     UTILITY
-  ----------------------------------------- */
+/* ============================================================
+   CONFIGURAZIONE
+============================================================ */
 
-  function formatNumber(number) {
-    return String(number).padStart(2, "0");
+const STORAGE_KEY = "ilaria_private_stories";
+
+const experiencePerStory = 1;
+
+
+/*
+  Il livello viene determinato dalle storie lette.
+
+  0-1 storie  → Livello 1
+  2-2 storie  → Livello 2
+  3-3 storie  → Livello 3
+  4-4 storie  → Livello 4
+  ecc.
+*/
+
+function calculateLevel(storiesRead) {
+
+  return Math.max(
+    1,
+    storiesRead + 1
+  );
+
+}
+
+
+/* ============================================================
+   STATO
+============================================================ */
+
+let state = loadState();
+
+let currentFilter = "all";
+
+let currentWineStory = null;
+
+
+/* ============================================================
+   CARICAMENTO STATO
+============================================================ */
+
+function loadState() {
+
+  try {
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+
+      return {
+        readStories: [],
+        wineStories: []
+      };
+
+    }
+
+    const parsed = JSON.parse(saved);
+
+    return {
+      readStories: Array.isArray(parsed.readStories)
+        ? parsed.readStories
+        : [],
+
+      wineStories: Array.isArray(parsed.wineStories)
+        ? parsed.wineStories
+        : []
+    };
+
+  } catch (error) {
+
+    console.warn(
+      "Impossibile leggere lo stato salvato.",
+      error
+    );
+
+    return {
+      readStories: [],
+      wineStories: []
+    };
+
+  }
+
+}
+
+
+/* ============================================================
+   SALVATAGGIO
+============================================================ */
+
+function saveState() {
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(state)
+  );
+
+}
+
+
+/* ============================================================
+   ESPERIENZA
+============================================================ */
+
+function getExperience() {
+
+  return state.readStories.length * experiencePerStory;
+
+}
+
+
+function getLevel() {
+
+  return calculateLevel(
+    state.readStories.length
+  );
+
+}
+
+
+/*
+  Trova la prossima soglia di esperienza.
+
+  Esempio:
+
+  0 storie:
+  livello 1 → prossima soglia 2
+
+  2 storie:
+  livello 3 → prossima soglia 3
+
+  Questo serve soprattutto alla barra.
+*/
+
+function getNextExperienceRequirement() {
+
+  const lockedExperienceStories = storieData
+    .filter(story =>
+      story.access &&
+      story.access.type === "experience"
+    )
+    .map(story => story.access.required)
+    .filter(value => value > getExperience())
+    .sort((a, b) => a - b);
+
+  if (lockedExperienceStories.length === 0) {
+
+    return Math.max(
+      getExperience(),
+      1
+    );
+
+  }
+
+  return lockedExperienceStories[0];
+
+}
+
+
+/* ============================================================
+   CONTROLLO ACCESSO
+============================================================ */
+
+function isStoryRead(story) {
+
+  return state.readStories.includes(
+    story.id
+  );
+
+}
+
+
+function isWineUnlocked(story) {
+
+  return state.wineStories.includes(
+    story.id
+  );
+
+}
+
+
+function canOpenStory(story) {
+
+  if (!story.access) {
+
+    return true;
+
   }
 
 
-  function moodClass(mood) {
-    return mood.toLowerCase();
+  if (story.access.type === "free") {
+
+    return true;
+
   }
 
 
-  /* -----------------------------------------
-     RENDER STORIES
-  ----------------------------------------- */
+  if (story.access.type === "experience") {
 
-  function renderStories() {
+    return getExperience() >= story.access.required;
 
-    const filteredStories =
-      currentMood === "ALL"
-        ? storieData
-        : storieData.filter(story => story.mood === currentMood);
-
-    grid.innerHTML = "";
-
-    storyCount.textContent =
-      formatNumber(filteredStories.length);
+  }
 
 
-    if (!filteredStories.length) {
+  if (story.access.type === "wine") {
 
-      grid.innerHTML = `
-        <div class="empty-state">
-          Non ci sono storie in questa categoria.
-          <br><br>
-          Probabilmente è meglio così.
+    return isWineUnlocked(story);
+
+  }
+
+
+  return false;
+
+}
+
+
+/* ============================================================
+   TESTO ACCESSO
+============================================================ */
+
+function getAccessBadge(story) {
+
+  if (story.access.type === "free") {
+
+    return `
+      <span class="badge badge-free">
+        ✓ Lettura libera
+      </span>
+    `;
+
+  }
+
+
+  if (story.access.type === "experience") {
+
+    if (
+      getExperience() >= story.access.required
+    ) {
+
+      return `
+        <span class="badge badge-free">
+          ✓ Esperienza acquisita
+        </span>
+      `;
+
+    }
+
+    return `
+      <span class="badge badge-exp">
+        ◆ Esperienza ${String(
+          story.access.required
+        ).padStart(2, "0")}
+      </span>
+    `;
+
+  }
+
+
+  if (story.access.type === "wine") {
+
+    if (isWineUnlocked(story)) {
+
+      return `
+        <span class="badge badge-wine">
+          🍷 Accesso ottenuto
+        </span>
+      `;
+
+    }
+
+    return `
+      <span class="badge badge-wine">
+        🍷 ${story.wineRequired || "Vino"}
+      </span>
+    `;
+
+  }
+
+
+  return "";
+
+}
+
+
+/* ============================================================
+   CARD
+============================================================ */
+
+function renderStories() {
+
+  const grid =
+    document.getElementById(
+      "stories-grid"
+    );
+
+  if (!grid) return;
+
+
+  let stories = storieData;
+
+
+  /*
+    FILTRO MOOD
+  */
+
+  if (currentFilter !== "all") {
+
+    stories = stories.filter(
+      story =>
+        story.mood === currentFilter
+    );
+
+  }
+
+
+  if (stories.length === 0) {
+
+    grid.innerHTML = `
+      <div class="empty-state md:col-span-3">
+
+        <div class="font-mono text-[10px] text-red tracking-[0.15em]">
+          NESSUN DOCUMENTO
+        </div>
+
+        <div class="font-display text-2xl mt-3">
+          Nessuna storia con questo mood.
+        </div>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  grid.innerHTML = stories
+    .map(
+      (story, index) =>
+        createStoryCard(story, index)
+    )
+    .join("");
+
+
+  /*
+    Event listener sulle card
+  */
+
+  document
+    .querySelectorAll(
+      "[data-story-id]"
+    )
+    .forEach(card => {
+
+      card.addEventListener(
+        "click",
+        () => {
+
+          const storyId =
+            card.dataset.storyId;
+
+          const story =
+            storieData.find(
+              item =>
+                item.id === storyId
+            );
+
+          if (!story) return;
+
+          handleStoryClick(story);
+
+        }
+      );
+
+    });
+
+}
+
+
+/* ============================================================
+   CREA CARD
+============================================================ */
+
+function createStoryCard(story, index) {
+
+  const available =
+    canOpenStory(story);
+
+  const read =
+    isStoryRead(story);
+
+  const storyNumber =
+    String(index + 1).padStart(2, "0");
+
+
+  /*
+    CARD BLOCCATA
+  */
+
+  if (!available) {
+
+    let lockText = "";
+
+
+    if (
+      story.access.type === "experience"
+    ) {
+
+      const missing =
+        story.access.required -
+        getExperience();
+
+      lockText = `
+        <div class="lock-panel">
+
+          <div class="font-mono text-[9px] text-red tracking-[0.12em]">
+            STORIA NON ANCORA DISPONIBILE
+          </div>
+
+          <div class="font-display italic text-sm mt-2 opacity-70">
+            Ti mancano ${missing}
+            ${
+              missing === 1
+                ? "storia"
+                : "storie"
+            } da leggere.
+          </div>
+
+          <div class="font-mono text-[9px] mt-4 opacity-55">
+            ESPERIENZA RICHIESTA:
+            ${String(
+              story.access.required
+            ).padStart(2, "0")}
+          </div>
+
         </div>
       `;
 
-      return;
     }
 
 
-    filteredStories.forEach((story, index) => {
+    if (
+      story.access.type === "wine"
+    ) {
 
-      const card = document.createElement("article");
+      lockText = `
+        <div class="lock-panel">
 
-      card.className = "story-card";
+          <div class="text-2xl">
+            🍷
+          </div>
 
-      card.dataset.mood = story.mood;
+          <div class="font-mono text-[9px] text-red tracking-[0.12em] mt-3">
+            ACCESSO CON VINO
+          </div>
 
-      card.dataset.id = story.id;
+          <div class="font-display italic text-sm mt-2 opacity-70">
+            Questa storia preferisce
+            essere raccontata davanti
+            a un bicchiere.
+          </div>
 
+        </div>
+      `;
 
-      let statusHTML = "";
-
-      if (story.status === "unlocked") {
-
-        statusHTML = `
-          <span class="read-story">
-            LEGGI
-            <span>→</span>
-          </span>
-        `;
-
-      } else if (story.status === "locked_wine") {
-
-        statusHTML = `
-          <span class="story-lock">
-            🍷 ACCESSO LIMITATO
-          </span>
-        `;
-
-      } else {
-
-        statusHTML = `
-          <span class="story-lock">
-            🔒 ACCESSO LIMITATO
-          </span>
-        `;
-      }
+    }
 
 
-      card.innerHTML = `
+    return `
+      <article
+        class="story-card locked p-6 cursor-pointer"
+        data-story-id="${story.id}">
 
-        <div class="card-top">
+        <div class="flex justify-between items-start">
 
-          <span class="card-number">
-            STORY ${formatNumber(index + 1)}
-          </span>
+          <div class="story-number">
+            STORIA ${storyNumber}
+          </div>
 
-          <span class="card-mood">
-            ${story.mood.toUpperCase()}
-          </span>
+          ${getAccessBadge(story)}
 
         </div>
 
 
-        <div class="card-content">
+        <div class="mt-12">
 
-          <h3>
+          <div class="font-mono text-[9px] uppercase opacity-50 tracking-[0.12em]">
+            ${story.category}
+          </div>
+
+          <h3 class="story-title mt-3">
             ${story.title}
           </h3>
 
-          <div class="card-abstract">
-            ${story.abstract}
+        </div>
+
+
+        ${lockText}
+
+      </article>
+    `;
+
+  }
+
+
+  /*
+    CARD SBLOCCATA
+  */
+
+  return `
+    <article
+      class="story-card p-6 cursor-pointer"
+      data-story-id="${story.id}">
+
+      <div class="flex justify-between items-start">
+
+        <div class="story-number">
+          STORIA ${storyNumber}
+        </div>
+
+        ${getAccessBadge(story)}
+
+      </div>
+
+
+      <div class="mt-9">
+
+        <div class="font-mono text-[9px] uppercase opacity-50 tracking-[0.12em]">
+          ${story.category}
+        </div>
+
+        <h3 class="story-title mt-3">
+          ${story.title}
+        </h3>
+
+        <p class="story-excerpt mt-6">
+          ${story.abstract}
+        </p>
+
+      </div>
+
+
+      <div class="absolute bottom-6 left-6 right-6">
+
+        <div class="dossier-line mb-4"></div>
+
+        <div class="flex justify-between items-center">
+
+          <div class="font-mono text-[9px] opacity-50">
+            ${story.mood}
+            ·
+            ${story.readingTime}
+          </div>
+
+          <div class="font-mono text-[10px] text-red">
+            ${read ? "RILEGGI →" : "LEGGI →"}
           </div>
 
         </div>
 
-
-        <div class="card-bottom">
-
-          <span class="card-category">
-            ${story.category}
-            ·
-            ${story.readingTime}
-          </span>
-
-          ${statusHTML}
-
-        </div>
-
-      `;
-
-
-      card.addEventListener("click", () => {
-        openStory(story);
-      });
-
-
-      grid.appendChild(card);
-
-    });
-
-
-    initializeRedactions();
-
-  }
-
-
-  /* -----------------------------------------
-     REDACTIONS
-  ----------------------------------------- */
-
-  function initializeRedactions() {
-
-    const redactions = document.querySelectorAll(".redacted");
-
-    redactions.forEach(redaction => {
-
-      redaction.setAttribute("tabindex", "0");
-
-      redaction.addEventListener("click", event => {
-
-        event.stopPropagation();
-
-        redaction.classList.toggle("revealed");
-
-      });
-
-
-      redaction.addEventListener("keydown", event => {
-
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-
-          event.preventDefault();
-
-          redaction.classList.toggle("revealed");
-
-        }
-
-      });
-
-    });
-
-  }
-
-
-  /* -----------------------------------------
-     OPEN STORY
-  ----------------------------------------- */
-
-  function openStory(story) {
-
-    if (story.status !== "unlocked") {
-
-      renderLockedStory(story);
-
-    } else {
-
-      renderStory(story);
-
-    }
-
-    modal.classList.add("open");
-
-    modal.setAttribute("aria-hidden", "false");
-
-    document.body.style.overflow = "hidden";
-
-  }
-
-
-  /* -----------------------------------------
-     NORMAL STORY
-  ----------------------------------------- */
-
-  function renderStory(story) {
-
-    const storyIndex =
-      storieData.findIndex(item => item.id === story.id) + 1;
-
-
-    const paragraphs = story.body
-      .map(paragraph => `<p>${paragraph}</p>`)
-      .join("");
-
-
-    modalContent.innerHTML = `
-
-      <div class="reader-meta">
-
-        <span class="reader-number">
-          STORY ${formatNumber(storyIndex)}
-          ·
-          ${story.category.toUpperCase()}
-        </span>
-
-        <span class="reader-mood">
-          ${story.mood.toUpperCase()}
-        </span>
-
       </div>
 
+    </article>
+  `;
 
-      <h1 class="reader-title">
-        ${story.title}
-      </h1>
-
-
-      <p class="reader-intro">
-        ${story.intro}
-      </p>
+}
 
 
-      <div class="reader-divider"></div>
+/* ============================================================
+   CLICK STORIA
+============================================================ */
 
+function handleStoryClick(story) {
 
-      <div class="reader-body">
+  /*
+    Se è bloccata dall'esperienza
+  */
 
-        ${paragraphs}
+  if (
+    story.access.type === "experience" &&
+    getExperience() < story.access.required
+  ) {
 
-      </div>
+    showExperienceMessage(
+      story
+    );
 
-
-      <div class="reader-note">
-        ${story.note}
-      </div>
-
-
-      <div class="reader-end">
-
-        <span>
-          FINE DELLA STORIA
-        </span>
-
-        <span>
-          ${story.readingTime}
-        </span>
-
-      </div>
-
-    `;
-
-
-    initializeRedactions();
-
-    modalContent.scrollTop = 0;
+    return;
 
   }
 
 
-  /* -----------------------------------------
-     LOCKED STORY
-  ----------------------------------------- */
+  /*
+    Se è bloccata dal vino
+  */
 
-  function renderLockedStory(story) {
+  if (
+    story.access.type === "wine" &&
+    !isWineUnlocked(story)
+  ) {
 
-    let requirement = "";
+    openWineModal(
+      story
+    );
 
-    if (story.status === "locked_wine") {
-
-      requirement = `
-        <span class="lock-requirement">
-          🍷 ${story.wineRequired}
-        </span>
-      `;
-
-    } else {
-
-      requirement = `
-        <span class="lock-requirement">
-          🔒 ESPERIENZA RICHIESTA
-        </span>
-      `;
-
-    }
-
-
-    modalContent.innerHTML = `
-
-      <div class="lock-screen">
-
-        <div class="lock-symbol">
-          ${story.status === "locked_wine" ? "🍷" : "?"}
-        </div>
-
-        <span class="eyebrow">
-          ${story.category.toUpperCase()}
-        </span>
-
-        <h2>
-          ${story.title}
-        </h2>
-
-        <p>
-          ${story.abstract}
-        </p>
-
-        ${requirement}
-
-        <p>
-          Questa storia esiste.
-          <br>
-          Ma forse non è ancora il momento giusto.
-        </p>
-
-      </div>
-
-    `;
+    return;
 
   }
 
 
-  /* -----------------------------------------
-     CLOSE MODAL
-  ----------------------------------------- */
+  /*
+    Altrimenti apertura
+  */
 
-  function closeStory() {
+  openStory(
+    story
+  );
 
-    modal.classList.remove("open");
-
-    modal.setAttribute("aria-hidden", "true");
-
-    document.body.style.overflow = "";
-
-  }
+}
 
 
-  modalClose.addEventListener("click", closeStory);
+/* ============================================================
+   APERTURA STORIA
+============================================================ */
 
-  modalOverlay.addEventListener("click", closeStory);
+function openStory(story) {
 
+  /*
+    Prima apertura:
+    assegniamo esperienza.
 
-  document.addEventListener("keydown", event => {
+    Una storia vale esperienza
+    una sola volta.
+  */
 
-    if (event.key === "Escape") {
-      closeStory();
-    }
-
-  });
-
-
-  /* -----------------------------------------
-     FILTERS
-  ----------------------------------------- */
-
-  filterButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      currentMood = button.dataset.mood;
+  const wasRead =
+    isStoryRead(story);
 
 
-      filterButtons.forEach(btn => {
-        btn.classList.remove("active");
-      });
+  if (!wasRead) {
 
+    state.readStories.push(
+      story.id
+    );
 
-      button.classList.add("active");
+    saveState();
 
+    updateInterface();
 
-      renderStories();
-
-
-      document
-        .getElementById("storie")
-        .scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-    });
-
-  });
-
-
-  /* -----------------------------------------
-     RANDOM STORY
-  ----------------------------------------- */
-
-  function randomStory() {
-
-    const story =
-      storieData[
-        Math.floor(Math.random() * storieData.length)
-      ];
-
-
-    openStory(story);
+    showReadingMessage(
+      story
+    );
 
   }
 
 
-  surpriseButton.addEventListener(
-    "click",
-    randomStory
+  /*
+    Modale
+  */
+
+  const modal =
+    document.getElementById(
+      "story-modal"
+    );
+
+
+  document.getElementById(
+    "modal-number"
+  ).textContent =
+    story.id;
+
+
+  document.getElementById(
+    "modal-category"
+  ).textContent =
+    story.category;
+
+
+  document.getElementById(
+    "modal-title"
+  ).textContent =
+    stripHTML(story.title);
+
+
+  document.getElementById(
+    "modal-content"
+  ).innerHTML =
+    story.content;
+
+
+  document.getElementById(
+    "modal-mood"
+  ).textContent =
+    story.mood;
+
+
+  document.getElementById(
+    "modal-time"
+  ).textContent =
+    story.readingTime;
+
+
+  modal.classList.add(
+    "active"
   );
 
 
-  randomStoryButton.addEventListener(
-    "click",
-    randomStory
+  document.body.style.overflow =
+    "hidden";
+
+
+  /*
+    Redacted dentro il modal
+  */
+
+  setTimeout(
+    attachRedactedListeners,
+    50
   );
 
-
-  /* -----------------------------------------
-     CURSOR
-  ----------------------------------------- */
-
-  const cursor =
-    document.querySelector(".cursor-dot");
+}
 
 
-  if (cursor) {
+/* ============================================================
+   CHIUSURA MODALE
+============================================================ */
 
-    document.addEventListener("mousemove", event => {
+function closeStoryModal() {
 
-      cursor.style.left = `${event.clientX}px`;
-      cursor.style.top = `${event.clientY}px`;
+  const modal =
+    document.getElementById(
+      "story-modal"
+    );
 
-    });
+  modal.classList.remove(
+    "active"
+  );
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+/* ============================================================
+   VINO
+============================================================ */
+
+function openWineModal(story) {
+
+  currentWineStory =
+    story;
+
+  document.getElementById(
+    "wine-required"
+  ).textContent =
+    story.wineRequired ||
+    "1 bicchiere";
+
+
+  document
+    .getElementById(
+      "wine-modal"
+    )
+    .classList.add(
+      "active"
+    );
+
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closeWineModal() {
+
+  document
+    .getElementById(
+      "wine-modal"
+    )
+    .classList.remove(
+      "active"
+    );
+
+  currentWineStory =
+    null;
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+/*
+  L'utente dichiara di avere
+  il requisito necessario.
+
+  Il browser non può verificare
+  fisicamente se abbia bevuto.
+*/
+
+function unlockWineStory() {
+
+  if (!currentWineStory) {
+    return;
+  }
+
+
+  const story =
+    currentWineStory;
+
+
+  if (
+    !state.wineStories.includes(
+      story.id
+    )
+  ) {
+
+    state.wineStories.push(
+      story.id
+    );
+
+    saveState();
 
   }
 
 
-  /* -----------------------------------------
-     INITIALIZE
-  ----------------------------------------- */
+  closeWineModal();
 
   renderStories();
 
-});
+  showWineMessage(
+    story
+  );
+
+
+  /*
+    Apriamo immediatamente
+    il racconto.
+  */
+
+  setTimeout(
+    () => {
+
+      openStory(
+        story
+      );
+
+    },
+    450
+  );
+
+}
+
+
+/* ============================================================
+   MESSAGGI
+============================================================ */
+
+function showReadingMessage(story) {
+
+  const message =
+    document.getElementById(
+      "unlock-message"
+    );
+
+  const title =
+    document.getElementById(
+      "unlock-title"
+    );
+
+
+  title.textContent =
+    `Hai conosciuto un altro pezzo di Ilaria.`;
+
+
+  message.classList.add(
+    "show"
+  );
+
+
+  setTimeout(
+    () => {
+
+      message.classList.remove(
+        "show"
+      );
+
+    },
+    2800
+  );
+
+}
+
+
+function showWineMessage(story) {
+
+  const message =
+    document.getElementById(
+      "unlock-message"
+    );
+
+  const title =
+    document.getElementById(
+      "unlock-title"
+    );
+
+
+  title.textContent =
+    `La storia "${stripHTML(story.title)}" è stata aperta.`;
+
+
+  message.classList.add(
+    "show"
+  );
+
+
+  setTimeout(
+    () => {
+
+      message.classList.remove(
+        "show"
+      );
+
+    },
+    2800
+  );
+
+}
+
+
+function showExperienceMessage(story) {
+
+  const message =
+    document.getElementById(
+      "unlock-message"
+    );
+
+  const title =
+    document.getElementById(
+      "unlock-title"
+    );
+
+
+  const missing =
+    story.access.required -
+    getExperience();
+
+
+  title.textContent =
+    `Ancora ${missing} ${
+      missing === 1
+        ? "storia"
+        : "storie"
+    } e potrai conoscerla.`;
+
+
+  message.classList.add(
+    "show"
+  );
+
+
+  setTimeout(
+    () => {
+
+      message.classList.remove(
+        "show"
+      );
+
+    },
+    3000
+  );
+
+}
+
+
+/* ============================================================
+   INTERFACCIA / PROGRESSO
+============================================================ */
+
+function updateInterface() {
+
+  const experience =
+    getExperience();
+
+  const level =
+    getLevel();
+
+  const storiesRead =
+    state.readStories.length;
+
+
+  /*
+    HEADER
+  */
+
+  const headerLevel =
+    document.getElementById(
+      "header-level"
+    );
+
+  if (headerLevel) {
+
+    headerLevel.textContent =
+      String(level).padStart(2, "0");
+
+  }
+
+
+  const headerStories =
+    document.getElementById(
+      "header-stories"
+    );
+
+  if (headerStories) {
+
+    headerStories.textContent =
+      String(storiesRead).padStart(
+        2,
+        "0"
+      );
+
+  }
+
+
+  /*
+    LIVELLO PRINCIPALE
+  */
+
+  const experienceLevel =
+    document.getElementById(
+      "experience-level"
+    );
+
+  if (experienceLevel) {
+
+    experienceLevel.textContent =
+      String(level).padStart(
+        2,
+        "0"
+      );
+
+  }
+
+
+  const experienceCurrent =
+    document.getElementById(
+      "experience-current"
+    );
+
+  if (experienceCurrent) {
+
+    experienceCurrent.textContent =
+      experience;
+
+  }
+
+
+  /*
+    PROSSIMA STORIA
+  */
+
+  const nextRequirement =
+    getNextExperienceRequirement();
+
+
+  const nextElement =
+    document.getElementById(
+      "experience-next"
+    );
+
+  if (nextElement) {
+
+    nextElement.textContent =
+      nextRequirement;
+
+  }
+
+
+  /*
+    BARRA
+
+    Se siamo a 1/2:
+    50%
+
+    Se siamo a 2/3:
+    66%
+
+    ecc.
+  */
+
+  let progress = 100;
+
+
+  if (
+    nextRequirement >
+    experience
+  ) {
+
+    progress =
+      Math.min(
+        100,
+        (experience /
+          nextRequirement) *
+          100
+      );
+
+  }
+
+
+  const experienceProgress =
+    document.getElementById(
+      "experience-progress"
+    );
+
+  if (experienceProgress) {
+
+    experienceProgress.style.width =
+      `${progress}%`;
+
+  }
+
+
+  const headerProgress =
+    document.getElementById(
+      "header-progress"
+    );
+
+  if (headerProgress) {
+
+    headerProgress.style.width =
+      `${progress}%`;
+
+  }
+
+
+  /*
+    DOSSIER
+  */
+
+  const totalStories =
+    document.getElementById(
+      "total-stories"
+    );
+
+  if (totalStories) {
+
+    totalStories.textContent =
+      String(
+        storieData.length
+      ).padStart(
+        2,
+        "0"
+      );
+
+  }
+
+
+  const knownStories =
+    document.getElementById(
+      "known-stories"
+    );
+
+  if (knownStories) {
+
+    knownStories.textContent =
+      String(
+        storiesRead
+      ).padStart(
+        2,
+        "0"
+      );
+
+  }
+
+
+  /*
+    RENDER CARD
+  */
+
+  renderStories();
+
+}
+
+
+/* ============================================================
+   RANDOM STORY
+============================================================ */
+
+function openRandomStory() {
+
+  /*
+    Prima cerchiamo tra quelle
+    effettivamente leggibili.
+  */
+
+  const availableStories =
+    storieData.filter(
+      story =>
+        canOpenStory(story)
+    );
+
+
+  if (
+    availableStories.length === 0
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+    Preferiamo una storia
+    non ancora letta.
+  */
+
+  const unread =
+    availableStories.filter(
+      story =>
+        !isStoryRead(story)
+    );
+
+
+  const pool =
+    unread.length > 0
+      ? unread
+      : availableStories;
+
+
+  const randomIndex =
+    Math.floor(
+      Math.random() *
+      pool.length
+    );
+
+
+  openStory(
+    pool[randomIndex]
+  );
+
+}
+
+
+/* ============================================================
+   FILTRI
+============================================================ */
+
+function setupFilters() {
+
+  document
+    .querySelectorAll(
+      ".filter-btn"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          currentFilter =
+            button.dataset.filter;
+
+
+          document
+            .querySelectorAll(
+              ".filter-btn"
+            )
+            .forEach(btn => {
+
+              btn.classList.remove(
+                "btn-red"
+              );
+
+              btn.classList.add(
+                "btn-outline"
+              );
+
+            });
+
+
+          button.classList.remove(
+            "btn-outline"
+          );
+
+          button.classList.add(
+            "btn-red"
+          );
+
+
+          renderStories();
+
+        }
+      );
+
+    });
+
+}
+
+
+/* ============================================================
+   REDACTED
+============================================================ */
+
+function attachRedactedListeners() {
+
+  document
+    .querySelectorAll(
+      ".redacted"
+    )
+    .forEach(element => {
+
+      element.addEventListener(
+        "click",
+        event => {
+
+          event.stopPropagation();
+
+          element.classList.toggle(
+            "revealed"
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+/* ============================================================
+   UTILITY
+============================================================ */
+
+function stripHTML(html) {
+
+  const temporary =
+    document.createElement(
+      "div"
+    );
+
+  temporary.innerHTML =
+    html;
+
+  return temporary.textContent ||
+    temporary.innerText ||
+    "";
+
+}
+
+
+/* ============================================================
+   RESET PROGRESS
+============================================================ */
+
+/*
+  Non è mostrato nell'interfaccia.
+
+  Utile per te durante lo sviluppo.
+
+  Da console del browser:
+
+  resetIlariaProgress()
+
+*/
+
+window.resetIlariaProgress =
+  function () {
+
+    localStorage.removeItem(
+      STORAGE_KEY
+    );
+
+    location.reload();
+
+  };
+
+
+/* ============================================================
+   EVENT LISTENERS
+============================================================ */
+
+function setupEvents() {
+
+
+  /*
+    CHIUDI STORIA
+  */
+
+  document
+    .getElementById(
+      "modal-close"
+    )
+    .addEventListener(
+      "click",
+      closeStoryModal
+    );
+
+
+  /*
+    CLICK FUORI DAL MODAL
+  */
+
+  document
+    .getElementById(
+      "story-modal"
+    )
+    .addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target.id ===
+          "story-modal"
+        ) {
+
+          closeStoryModal();
+
+        }
+
+      }
+    );
+
+
+  /*
+    ESC
+  */
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Escape"
+      ) {
+
+        closeStoryModal();
+
+        closeWineModal();
+
+      }
+
+    }
+  );
+
+
+  /*
+    VINO
+  */
+
+  document
+    .getElementById(
+      "wine-confirm"
+    )
+    .addEventListener(
+      "click",
+      unlockWineStory
+    );
+
+
+  document
+    .getElementById(
+      "wine-cancel"
+    )
+    .addEventListener(
+      "click",
+      closeWineModal
+    );
+
+
+  /*
+    RANDOM
+  */
+
+  document
+    .getElementById(
+      "random-btn"
+    )
+    .addEventListener(
+      "click",
+      openRandomStory
+    );
+
+
+  document
+    .getElementById(
+      "random-btn-hero"
+    )
+    .addEventListener(
+      "click",
+      openRandomStory
+    );
+
+
+  document
+    .getElementById(
+      "random-btn-bottom"
+    )
+    .addEventListener(
+      "click",
+      openRandomStory
+    );
+
+
+  /*
+    START READING
+  */
+
+  document
+    .getElementById(
+      "start-reading"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        const firstAvailable =
+          storieData.find(
+            story =>
+              canOpenStory(story)
+          );
+
+
+        if (firstAvailable) {
+
+          openStory(
+            firstAvailable
+          );
+
+        }
+
+      }
+    );
+
+
+  setupFilters();
+
+}
+
+
+/* ============================================================
+   AVVIO
+============================================================ */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    updateInterface();
+
+    setupEvents();
+
+  }
+);
