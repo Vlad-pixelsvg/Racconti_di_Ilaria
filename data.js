@@ -1,7 +1,7 @@
 const storieData = [
 
   {
-    id: "STORIA-01",
+    id: "DOC-01",
 
     title: "Palinsesti serali e maratone d'azione",
 
@@ -9,38 +9,45 @@ const storieData = [
 
     mood: "Nostalgico",
 
-    readingTime: "5 min",
+    status: "unlocked",
 
     requirement: {
       type: "free"
     },
 
-    abstract:
-      "Ci sono cose che non considero semplicemente programmi televisivi. Sono diventate una specie di compagnia.",
+    readingTime: "5 min",
+
+    abstract: `
+      I miei punti fermi sullo schermo:
+      la profilazione di <span class="redacted">Criminal Minds</span>,
+      l'antropologia di <span class="redacted">Bones</span>
+      e le indagini di <span class="redacted">CSI: Scena del crimine</span>.
+      Sul fronte film, l'equilibrio oscilla tra la dolcezza de
+      <span class="redacted">L'amore non va in vacanza</span>
+      e l'adrenalina pura di
+      <span class="redacted">Fast & Furious</span>
+      e <span class="redacted">John Wick</span>.
+    `,
 
     content: `
       <p>
-        Ci sono quelle sere in cui non hai davvero voglia di scegliere
-        qualcosa da guardare. Vuoi soltanto qualcosa che conosci già.
+        Ci sono cose che non considero semplicemente programmi televisivi.
+        Sono diventate una specie di compagnia.
       </p>
 
       <p>
-        Per me quel posto è stato occupato per molto tempo da
+        Per molto tempo i miei punti fermi sono stati
         <span class="redacted">Criminal Minds</span>,
-        da <span class="redacted">Bones</span> e dalle indagini di
+        <span class="redacted">Bones</span> e
         <span class="redacted">CSI: Scena del crimine</span>.
       </p>
 
       <p>
-        Potrei probabilmente ricordare episodi interi soltanto da una
-        scena o da una battuta.
-      </p>
-
-      <p>
-        E poi ci sono i film. Da una parte la dolcezza de
+        Poi ci sono i film.
+        Da una parte la dolcezza de
         <span class="redacted">L'amore non va in vacanza</span>.
-        Dall'altra <span class="redacted">Fast & Furious</span> e
-        <span class="redacted">John Wick</span>.
+        Dall'altra <span class="redacted">Fast & Furious</span>
+        e <span class="redacted">John Wick</span>.
       </p>
 
       <p>
@@ -52,22 +59,27 @@ const storieData = [
 
 
   {
-    id: "STORIA-02",
+    id: "DOC-02",
 
-    title: "La volta che ho confuso Marco con il cameriere",
+    title: "La volta che ho confuso <span class='redacted'>Marco</span> con il cameriere",
 
     category: "Relazioni",
 
     mood: "Vergognoso",
 
-    readingTime: "4 min",
+    status: "unlocked",
 
     requirement: {
       type: "free"
     },
 
-    abstract:
-      "Una delle situazioni in cui avrei voluto poter sparire semplicemente attraversando il pavimento.",
+    readingTime: "4 min",
+
+    abstract: `
+      È successo a <span class="redacted">Bologna</span> nel 2022.
+      Credevo mi stesse portando il conto,
+      invece voleva il mio numero.
+    `,
 
     content: `
       <p>
@@ -75,13 +87,13 @@ const storieData = [
       </p>
 
       <p>
-        Ero convinta che la persona che si stava avvicinando al nostro
-        tavolo fosse il cameriere.
+        Ero convinta che la persona che si stava avvicinando
+        al tavolo fosse il cameriere.
       </p>
 
       <p>
-        Quindi, con assoluta naturalezza, ho iniziato a chiedere
-        informazioni sul conto.
+        Quindi, con assoluta naturalezza,
+        ho iniziato a chiedere informazioni sul conto.
       </p>
 
       <p>
@@ -93,40 +105,34 @@ const storieData = [
       </p>
 
       <p>
-        E, apparentemente, non era venuto al tavolo per parlare
-        del conto.
-      </p>
-
-      <p>
-        Voleva il mio numero.
-      </p>
-
-      <p>
-        Non ricordo esattamente cosa gli ho risposto.
-        Ricordo però perfettamente la sensazione di voler scomparire.
+        E voleva il mio numero.
       </p>
     `
   },
 
 
   {
-    id: "STORIA-03",
+    id: "DOC-03",
 
-    title: "Quello che ho imparato dal mio primo lavoro",
+    title: "Perché non parlo mai del mio primo lavoro",
 
     category: "Carriera",
 
     mood: "Cinico",
 
-    readingTime: "6 min",
+    status: "locked_inexperience",
 
     requirement: {
       type: "experience",
       amount: 2
     },
 
-    abstract:
-      "Alcune cose si imparano soltanto dopo aver fatto abbastanza errori.",
+    readingTime: "6 min",
+
+    abstract: `
+      Un resoconto sugli errori commessi quando non sapevo ancora
+      come ci si difende in un ufficio.
+    `,
 
     content: `
       <p>
@@ -139,11 +145,6 @@ const storieData = [
       </p>
 
       <p>
-        Io, per esempio, non sapevo ancora come ci si difende
-        in un ambiente di lavoro.
-      </p>
-
-      <p>
         Pensavo che essere disponibili significasse dire sempre sì.
         Pensavo che impegnarsi molto fosse sufficiente.
       </p>
@@ -153,21 +154,16 @@ const storieData = [
       </p>
 
       <p>
-        Ho imparato che esistono confini, persone difficili,
-        responsabilità che non sono tue e conversazioni che devi
-        imparare ad affrontare.
-      </p>
-
-      <p>
-        È una storia che preferisco raccontare soltanto a chi
-        ha già iniziato a conoscermi un po'.
+        Ho imparato che esistono confini,
+        persone difficili e conversazioni
+        che devi imparare ad affrontare.
       </p>
     `
   },
 
 
   {
-    id: "STORIA-04",
+    id: "DOC-04",
 
     title: "La verità sulla serata a Londra",
 
@@ -175,15 +171,21 @@ const storieData = [
 
     mood: "Impulsivo",
 
-    readingTime: "8 min",
+    status: "locked_wine",
 
     requirement: {
       type: "wine",
       amount: 1
     },
 
-    abstract:
-      "Questa storia non è particolarmente difficile da raccontare. È difficile raccontarla completamente sobri.",
+    wineRequired: "1 Calice di Rosso",
+
+    readingTime: "8 min",
+
+    abstract: `
+      Dettagli che possono essere confessati soltanto dopo
+      una certa ora e il giusto livello di alcol.
+    `,
 
     content: `
       <p>
@@ -191,15 +193,13 @@ const storieData = [
       </p>
 
       <p>
-        Una sera che doveva essere tranquilla e che,
-        per motivi che preferisco non spiegare subito,
-        ha preso una direzione completamente diversa.
+        Una sera che doveva essere tranquilla
+        e che ha preso una direzione completamente diversa.
       </p>
 
       <p>
-        C'era musica.
-        C'erano persone.
-        C'erano decisioni che sembravano ottime in quel momento.
+        C'erano musica, persone e decisioni
+        che sembravano ottime in quel momento.
       </p>
 
       <p>
@@ -210,16 +210,12 @@ const storieData = [
       <p>
         Il resto preferisco raccontarlo davanti a un bicchiere.
       </p>
-
-      <p>
-        È più coerente con la storia.
-      </p>
     `
   },
 
 
   {
-    id: "STORIA-05",
+    id: "DOC-05",
 
     title: "Una cosa che non ammetterò facilmente",
 
@@ -227,15 +223,18 @@ const storieData = [
 
     mood: "Vergognoso",
 
-    readingTime: "7 min",
+    status: "locked_inexperience",
 
     requirement: {
       type: "experience",
       amount: 4
     },
 
-    abstract:
-      "Per arrivare qui bisogna aver già letto abbastanza di me.",
+    readingTime: "7 min",
+
+    abstract: `
+      Per arrivare qui bisogna aver già letto abbastanza di me.
+    `,
 
     content: `
       <p>
@@ -248,29 +247,20 @@ const storieData = [
       </p>
 
       <p>
-        Semplicemente perché dice qualcosa di me che normalmente
-        preferisco nascondere.
+        Semplicemente perché dice qualcosa di me
+        che normalmente preferisco nascondere.
       </p>
 
       <p>
-        Ho passato molto tempo a cercare di sembrare più sicura
-        di quanto fossi realmente.
-      </p>
-
-      <p>
-        E alcune delle mie decisioni peggiori sono nate proprio
-        dal tentativo di dimostrare qualcosa.
-      </p>
-
-      <p>
-        Questa è una di quelle.
+        Ho passato molto tempo a cercare di sembrare
+        più sicura di quanto fossi realmente.
       </p>
     `
   },
 
 
   {
-    id: "STORIA-06",
+    id: "DOC-06",
 
     title: "Quella volta in cui avrei dovuto stare zitta",
 
@@ -278,20 +268,24 @@ const storieData = [
 
     mood: "Cinico",
 
-    readingTime: "5 min",
+    status: "locked_inexperience",
 
     requirement: {
       type: "experience",
       amount: 6
     },
 
-    abstract:
-      "Una frase detta nel momento sbagliato può diventare una storia per anni.",
+    readingTime: "5 min",
+
+    abstract: `
+      Una frase detta nel momento sbagliato
+      può diventare una storia per anni.
+    `,
 
     content: `
       <p>
-        Ci sono momenti in cui il cervello dovrebbe semplicemente
-        premere il pulsante pausa.
+        Ci sono momenti in cui il cervello dovrebbe
+        semplicemente premere il pulsante pausa.
       </p>
 
       <p>
@@ -309,15 +303,15 @@ const storieData = [
       </p>
 
       <p>
-        Il silenzio successivo è ancora oggi uno dei silenzi
-        più lunghi che io ricordi.
+        Il silenzio successivo è ancora oggi
+        uno dei silenzi più lunghi che ricordi.
       </p>
     `
   },
 
 
   {
-    id: "STORIA-07",
+    id: "DOC-07",
 
     title: "La storia che non avevo intenzione di raccontare",
 
@@ -325,26 +319,30 @@ const storieData = [
 
     mood: "Nostalgico",
 
-    readingTime: "10 min",
+    status: "locked_inexperience",
 
     requirement: {
       type: "experience",
       amount: 10
     },
 
-    abstract:
-      "Questa è una di quelle storie che diventano più facili da raccontare con il tempo.",
+    readingTime: "10 min",
+
+    abstract: `
+      Alcune storie diventano più facili da raccontare
+      con il tempo.
+    `,
 
     content: `
       <p>
-        Alcune persone entrano nella nostra vita senza che ce ne
-        accorgiamo immediatamente.
+        Alcune persone entrano nella nostra vita
+        senza che ce ne accorgiamo immediatamente.
       </p>
 
       <p>
-        Poi, quando guardiamo indietro, ci rendiamo conto che
-        hanno lasciato una traccia molto più grande di quanto
-        pensassimo.
+        Poi, quando guardiamo indietro,
+        ci rendiamo conto che hanno lasciato una traccia
+        molto più grande di quanto pensassimo.
       </p>
 
       <p>
@@ -360,7 +358,7 @@ const storieData = [
 
 
   {
-    id: "STORIA-08",
+    id: "DOC-08",
 
     title: "Questa forse è meglio con due bicchieri",
 
@@ -368,15 +366,19 @@ const storieData = [
 
     mood: "Impulsivo",
 
-    readingTime: "12 min",
+    status: "locked_wine",
 
     requirement: {
       type: "wine",
       amount: 2
     },
 
-    abstract:
-      "Non tutte le storie sono fatte per essere raccontate al primo bicchiere.",
+    readingTime: "12 min",
+
+    abstract: `
+      Non tutte le storie sono fatte per essere raccontate
+      al primo bicchiere.
+    `,
 
     content: `
       <p>
@@ -388,7 +390,8 @@ const storieData = [
       </p>
 
       <p>
-        Questa storia appartiene decisamente alla seconda categoria.
+        Questa storia appartiene decisamente
+        alla seconda categoria.
       </p>
 
       <p>
@@ -396,14 +399,6 @@ const storieData = [
         Soltanto una serie di decisioni discutibili,
         una notte molto lunga e una persona che,
         probabilmente, non avrebbe dovuto essere lì.
-      </p>
-
-      <p>
-        Il resto...
-      </p>
-
-      <p>
-        ...te lo racconto dopo il secondo bicchiere.
       </p>
     `
   }
