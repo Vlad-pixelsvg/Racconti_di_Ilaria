@@ -1,716 +1,93 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ilaria's Archives — Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #090d16;
-            --surface: #111827;
-            --surface-hover: #1f2937;
-            --border: #1f2937;
-            --border-focus: #374151;
-            
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.25);
-            --wine: #f43f5e;
-            --wine-glow: rgba(244, 63, 94, 0.25);
-            --success: #10b981;
-            --amber: #f59e0b;
-            
-            --text-main: #f9fafb;
-            --text-muted: #6b7280;
-            --text-sub: #9ca3af;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ilaria | Archivio Narrativo</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Google per estetica editoriale -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Newsreader', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 2rem 1rem;
-        }
-
-        .app-container {
-            max-width: 900px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        /* HEADER DASHBOARD */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 1.25rem 1.5rem;
-            border-radius: 16px;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand-title h1 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .brand-title p {
-            font-size: 0.825rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .btn-add {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px var(--primary-glow);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .btn-add:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        /* METRICS GRID */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-
-        .metric-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .metric-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.825rem;
-            font-weight: 600;
-            color: var(--text-sub);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            display: flex;
-            align-items: baseline;
-            gap: 0.4rem;
-        }
-
-        .metric-value span {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Progress Bars */
-        .progress-bar-bg {
-            background: var(--bg);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 35%;
-            transition: width 0.3s;
-        }
-
-        .btn-action-sm {
-            background: var(--surface-hover);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 0.5rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .btn-action-sm:hover {
-            border-color: var(--text-muted);
-        }
-
-        .btn-wine-sm {
-            color: var(--wine);
-        }
-
-        .btn-wine-sm:hover {
-            background: var(--wine);
-            color: white;
-            border-color: var(--wine);
-        }
-
-        /* FILTRI STATO */
-        .filters-bar {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .chip {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-sub);
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .chip.active, .chip:hover {
-            background: var(--surface-hover);
-            color: var(--text-main);
-            border-color: var(--text-muted);
-        }
-
-        /* FEED RACCONTI (CARDS SCHEMATICHE) */
-        .stories-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .story-row {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .story-row:not(.locked):hover {
-            border-color: var(--border-focus);
-            background: var(--surface-hover);
-        }
-
-        .story-main {
-            padding: 1rem 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            gap: 1rem;
-        }
-
-        .story-info {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .story-icon {
-            font-size: 1.2rem;
-            background: var(--bg);
-            padding: 0.4rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .story-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* Badges Minimal */
-        .status-badge {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            white-space: nowrap;
-        }
-
-        .badge-locked { background: rgba(107, 114, 128, 0.1); color: var(--text-muted); border-color: var(--border); }
-        .badge-ready { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
-        .badge-wine { background: rgba(244, 63, 94, 0.1); color: var(--wine); border-color: rgba(244, 63, 94, 0.2); }
-        .badge-archived { background: rgba(245, 158, 11, 0.1); color: var(--amber); border-color: rgba(245, 158, 11, 0.2); }
-
-        .story-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.25s ease-out, padding 0.25s ease;
-            background: var(--bg);
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            line-height: 1.6;
-        }
-
-        .story-details.open {
-            padding: 1rem 1.25rem;
-            max-height: 400px;
-            border-top: 1px solid var(--border);
-        }
-
-        /* MODAL NUOVO RACCONTO */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 16px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
-        .btn-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .form-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-sub);
-        }
-
-        .form-control {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 0.6rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.8rem;
-        }
-
-        .btn-submit {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 0.5rem;
-        }
-
-        .hidden { display: none !important; }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body>
+<body class="bg-[#F7F4EF] text-[#111111] antialiased min-h-screen flex flex-col justify-between">
 
-    <div class="app-container">
-        
-        <!-- HEADER -->
-        <header class="app-header">
-            <div class="brand-title">
-                <h1>📖 Racconti di Ilaria</h1>
-                <p>Sistema di sblocco aneddoti e ricordi condivisi</p>
-            </div>
-            <button class="btn-add" onclick="openModal()">
-                <span>+</span> Nuovo Racconto
-            </button>
-        </header>
-
-        <!-- DASHBOARD STATUS -->
-        <div class="metrics-grid">
-            <!-- Metric 1: XP -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <span>Livello Confidenza</span>
-                    <strong id="lvl-text" style="color: var(--primary);">Liv. 3</strong>
-                </div>
-                <div class="metric-value">
-                    <span id="xp-text">350</span> <span>/ 1000 XP</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="xp-bar"></div>
-                </div>
-                <button class="btn-action-sm" onclick="addXP()">💬 Chiacchiera con Ilaria (+250 XP)</button>
-            </div>
-
-            <!-- Metric 2: Vino -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <span>Livello Aperitivo</span>
-                    <strong id="sobriety-text" style="color: var(--success);">Sobrio</strong>
-                </div>
-                <div class="metric-value" id="wine-counter">
-                    0 <span>Bicchieri / Spritz</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="wine-bar" style="width: 0%; background: var(--wine);"></div>
-                </div>
-                <button class="btn-action-sm btn-wine-sm" onclick="addWine()">🍷 Offri un bicchiere di vino</button>
-            </div>
-        </div>
-
-        <!-- FILTRI -->
-        <div class="filters-bar">
-            <button class="chip active" onclick="filterFeed('all', this)">Tutti</button>
-            <button class="chip" onclick="filterFeed('unlocked', this)">🔓 Sbloccati</button>
-            <button class="chip" onclick="filterFeed('locked', this)">🔒 Da Sbloccare</button>
-            <button class="chip" onclick="filterFeed('archived', this)">📁 Archivio</button>
-        </div>
-
-        <!-- LISTA RACCONTI (FEED) -->
-        <div class="stories-feed" id="stories-feed">
-            
-            <!-- Story 1: XP Locked -->
-            <div class="story-row locked" data-status="locked" data-type="xp" data-req="1000">
-                <div class="story-main" onclick="toggleStoryRow(this, 'xp', 1000)">
-                    <div class="story-info">
-                        <span class="story-icon">🇬🇧</span>
-                        <span class="story-title">Perché Ilaria evita di parlare inglese?</span>
-                    </div>
-                    <span class="status-badge badge-locked">🔒 Req. 1000 XP (Liv. 5)</span>
-                </div>
-                <div class="story-details">
-                    <p>La verità è che Ilaria soffre della "Sindrome da Panic-English". Nella sua testa la grammatica è perfetta, ma appena le dicono <i>"So, tell me about yourself..."</i> la mente traduce tutto in dialetto o panico puro!</p>
-                </div>
-            </div>
-
-            <!-- Story 2: Disponibile -->
-            <div class="story-row" data-status="unlocked" data-type="free">
-                <div class="story-main" onclick="toggleStoryRow(this, 'free')">
-                    <div class="story-info">
-                        <span class="story-icon">🚂</span>
-                        <span class="story-title">Il disastro del viaggio a Milano del 19 Settembre</span>
-                    </div>
-                    <span class="status-badge badge-ready">✓ Disponibile</span>
-                </div>
-                <div class="story-details">
-                    <p>Una coincidenza persa e una serie di sfortunate decisioni. Quel viaggio si è trasformato in una maratona di sopravvivenza urbana tra ritardi Trenitalia e 4 caffè presi al volo per non crollare.</p>
-                </div>
-            </div>
-
-            <!-- Story 3: Wine Locked -->
-            <div class="story-row locked" data-status="locked" data-type="wine" data-req="1">
-                <div class="story-main" onclick="toggleStoryRow(this, 'wine', 1)">
-                    <div class="story-info">
-                        <span class="story-icon">🍾</span>
-                        <span class="story-title">La teoria filosofica scritta sul tovagliolo</span>
-                    </div>
-                    <span class="status-badge badge-wine">🍷 Req. 1 Bicchiere</span>
-                </div>
-                <div class="story-details">
-                    <p>Qui le inibizioni cadono. Questo racconto contiene teorie sgangherate sull'universo e quella promessa fatta a fine serata: <i>"Dobbiamo assolutamente aprire un chiringuito insieme!"</i> che il giorno dopo viene puntualmente dimenticata.</p>
-                </div>
-            </div>
-
-            <!-- Story 4: Archivio -->
-            <div class="story-row" data-status="archived" data-type="archived">
-                <div class="story-main" onclick="toggleStoryRow(this, 'archived')">
-                    <div class="story-info">
-                        <span class="story-icon">🌐</span>
-                        <span class="story-title">L'amico conosciuto su MSN nel 2008</span>
-                    </div>
-                    <span class="status-badge badge-archived">📁 Già Raccontato</span>
-                </div>
-                <div class="story-details">
-                    <p><i>Raccontato durante la cena del mese scorso.</i><br>Una di quelle amicizie nate su internet, fatta di chat fino alle 3 di notte, trilli, squilli e tanta nostalgia dei primi anni 2000.</p>
-                </div>
-            </div>
-
-        </div>
+  <!-- HEADER EDITORIALE -->
+  <header class="border-b border-[#E0E0E0] bg-white">
+    <div class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
+      <h1 class="font-serif text-2xl font-bold tracking-tight">
+        ILARIA <span class="font-sans text-xs text-gray-400 font-normal">| ARCHIVIO NARRATIVO</span>
+      </h1>
+      <nav class="font-mono text-xs space-x-6">
+        <a href="#archivio" class="hover:underline">01. INDICE</a>
+        <a href="#metodo" class="hover:underline">02. METODO</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- MODAL CREAZIONE NUOVO RACCONTO -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Aggiungi Nuovo Racconto</h3>
-                <button class="btn-close" onclick="closeModal()">✕</button>
-            </div>
-            <form id="add-story-form" onsubmit="createNewStory(event)">
-                <div class="form-group">
-                    <label>Titolo del racconto</label>
-                    <input type="text" id="input-title" class="form-control" placeholder="Es. Quella volta al concerto..." required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Icona (Emoji)</label>
-                        <input type="text" id="input-icon" class="form-control" placeholder="Es. 🎸" maxlength="2" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Requisito di Sblocco</label>
-                        <select id="input-type" class="form-control" onchange="updateReqInput()">
-                            <option value="free">Subito Disponibile</option>
-                            <option value="xp">XP (Confidenza)</option>
-                            <option value="wine">Vino / Spritz</option>
-                            <option value="archived">Già Raccontato (Archivio)</option>
-                        </select>
-                    </div>
-                </div>
+  <!-- HERO SECTION -->
+  <section class="max-w-4xl mx-auto px-6 py-16 text-center">
+    <h2 class="font-serif text-3xl md:text-4xl font-bold mb-4 leading-tight">
+      "Le storie di Ilaria (quelle che si possono dire, ed altre che richiedono un bicchiere)."
+    </h2>
+    <p class="font-serif italic text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+      Alcune storie sono già scritte. Altre hanno bisogno di un calice di vino per uscire. Altre attendono che io viva abbastanza per poterle capire.
+    </p>
+  </section>
 
-                <div class="form-group" id="req-val-group" style="display: none;">
-                    <label id="req-val-label">Valore Requisito</label>
-                    <input type="number" id="input-req-val" class="form-control" value="1000">
-                </div>
-
-                <div class="form-group">
-                    <label>Contenuto del racconto / Segreto</label>
-                    <textarea id="input-content" class="form-control" rows="4" placeholder="Scrivi qui la storia..." required></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit">Aggiungi al Feed</button>
-            </form>
-        </div>
+  <!-- FILTRI -->
+  <section id="archivio" class="max-w-6xl mx-auto px-6 mb-8">
+    <div class="flex flex-wrap gap-2 border-b border-[#E0E0E0] pb-4 font-mono text-xs">
+      <button data-filter="ALL" class="filter-btn px-3 py-1.5 bg-[#111111] text-white font-bold">TUTTE LE STORIE</button>
+      <button data-filter="unlocked" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">SBLOCCATE</button>
+      <button data-filter="told_verbally" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">RACCONTATE</button>
+      <button data-filter="locked_wine" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">RICHIESTO VINO</button>
+      <button data-filter="locked_experience" class="filter-btn px-3 py-1.5 bg-white border border-[#E0E0E0] text-gray-600 hover:border-black">IN MATURAZIONE</button>
     </div>
+  </section>
 
-    <script>
-        // Stato Applicazione
-        let currentXP = 350;
-        const maxXP = 1000;
-        let glassesOfWine = 0;
+  <!-- GRIGLIA CARDS DInAMICA -->
+  <main class="max-w-6xl mx-auto px-6 pb-24 w-full">
+    <div id="grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Le card verranno inserite qui da app.js -->
+    </div>
+  </main>
 
-        // Toggle Accordion per la riga
-        function toggleStoryRow(element, type, reqVal = 0) {
-            const parentRow = element.parentElement;
-            const details = parentRow.querySelector('.story-details');
+  <!-- MODALE -->
+  <div id="unlock-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white border border-[#111111] max-w-lg w-full p-8 relative shadow-2xl">
+      <button id="modal-close" class="absolute top-4 right-4 font-mono text-sm text-gray-500 hover:text-black">
+        [ X CHIUDI ]
+      </button>
+      <div id="modal-content">
+        <!-- Il contenuto dinamico del modale verrà inserito da app.js -->
+      </div>
+    </div>
+  </div>
 
-            // Controllo condizioni di sblocco
-            if (type === 'xp' && currentXP < reqVal) {
-                return; // Bloccato
-            }
-            if (type === 'wine' && glassesOfWine < reqVal) {
-                return; // Bloccato
-            }
+  <!-- FOOTER -->
+  <footer class="border-t border-[#E0E0E0] bg-white py-8 text-center font-mono text-xs text-gray-400">
+    © 2026 ILARIA NARRATIVE ARCHIVE — TUTTI I DIRITTI RISERVATI
+  </footer>
 
-            details.classList.toggle('open');
-        }
-
-        // Aggiungi XP
-        function addXP() {
-            if (currentXP < maxXP) {
-                currentXP = Math.min(currentXP + 250, maxXP);
-                updateState();
-            }
-        }
-
-        // Aggiungi Vino
-        function addWine() {
-            glassesOfWine++;
-            updateState();
-        }
-
-        // Aggiorna Interfaccia e Sblocca Contenuti
-        function updateState() {
-            // XP UI
-            document.getElementById('xp-text').innerText = currentXP;
-            document.getElementById('xp-bar').style.width = (currentXP / maxXP * 100) + '%';
-            if (currentXP >= maxXP) {
-                document.getElementById('lvl-text').innerText = 'Liv. 5 (Max)';
-            }
-
-            // Wine UI
-            document.getElementById('wine-counter').innerHTML = `${glassesOfWine} <span>Bicchieri / Spritz</span>`;
-            document.getElementById('wine-bar').style.width = Math.min(glassesOfWine * 50, 100) + '%';
-            if (glassesOfWine >= 1) {
-                document.getElementById('sobriety-text').innerText = 'Allegro 🍷';
-                document.getElementById('sobriety-text').style.color = 'var(--wine)';
-            }
-
-            // Check sblocchi dinamici sulle card
-            document.querySelectorAll('.story-row.locked').forEach(row => {
-                const type = row.getAttribute('data-type');
-                const req = parseInt(row.getAttribute('data-req'));
-
-                if ((type === 'xp' && currentXP >= req) || (type === 'wine' && glassesOfWine >= req)) {
-                    row.classList.remove('locked');
-                    row.setAttribute('data-status', 'unlocked');
-                    
-                    const badge = row.querySelector('.status-badge');
-                    badge.className = 'status-badge badge-ready';
-                    badge.innerText = '✓ Sbloccato!';
-                }
-            });
-        }
-
-        // Filtri
-        function filterFeed(filter, btn) {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-
-            document.querySelectorAll('.story-row').forEach(row => {
-                const status = row.getAttribute('data-status');
-                if (filter === 'all' || status === filter) {
-                    row.classList.remove('hidden');
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
-        }
-
-        // Gestione Modal
-        function openModal() {
-            document.getElementById('modal-overlay').classList.add('open');
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.remove('open');
-        }
-
-        function updateReqInput() {
-            const type = document.getElementById('input-type').value;
-            const group = document.getElementById('req-val-group');
-            const label = document.getElementById('req-val-label');
-            const input = document.getElementById('input-req-val');
-
-            if (type === 'xp') {
-                group.style.display = 'flex';
-                label.innerText = 'XP Richiesti';
-                input.value = 1000;
-            } else if (type === 'wine') {
-                group.style.display = 'flex';
-                label.innerText = 'Bicchieri Richiesti';
-                input.value = 1;
-            } else {
-                group.style.display = 'none';
-            }
-        }
-
-        // Creazione Dinamica Nuovo Racconto
-        function createNewStory(e) {
-            e.preventDefault();
-
-            const title = document.getElementById('input-title').value;
-            const icon = document.getElementById('input-icon').value;
-            const type = document.getElementById('input-type').value;
-            const reqVal = parseInt(document.getElementById('input-req-val').value) || 0;
-            const content = document.getElementById('input-content').value;
-
-            let isLocked = false;
-            let status = 'unlocked';
-            let badgeClass = 'badge-ready';
-            let badgeText = '✓ Disponibile';
-
-            if (type === 'xp' && currentXP < reqVal) {
-                isLocked = true;
-                status = 'locked';
-                badgeClass = 'badge-locked';
-                badgeText = `🔒 Req. ${reqVal} XP`;
-            } else if (type === 'wine' && glassesOfWine < reqVal) {
-                isLocked = true;
-                status = 'locked';
-                badgeClass = 'badge-wine';
-                badgeText = `🍷 Req. ${reqVal} Bicchier${reqVal > 1 ? 'i' : 'e'}`;
-            } else if (type === 'archived') {
-                status = 'archived';
-                badgeClass = 'badge-archived';
-                badgeText = '📁 Già Raccontato';
-            }
-
-            const newRow = document.createElement('div');
-            newRow.className = `story-row ${isLocked ? 'locked' : ''}`;
-            newRow.setAttribute('data-status', status);
-            newRow.setAttribute('data-type', type);
-            if (isLocked) newRow.setAttribute('data-req', reqVal);
-
-            newRow.innerHTML = `
-                <div class="story-main" onclick="toggleStoryRow(this, '${type}', ${reqVal})">
-                    <div class="story-info">
-                        <span class="story-icon">${icon}</span>
-                        <span class="story-title">${title}</span>
-                    </div>
-                    <span class="status-badge ${badgeClass}">${badgeText}</span>
-                </div>
-                <div class="story-details">
-                    <p>${content}</p>
-                </div>
-            `;
-
-            document.getElementById('stories-feed').prepend(newRow);
-            
-            // Reset e chiusura
-            document.getElementById('add-story-form').reset();
-            updateReqInput();
-            closeModal();
-        }
-    </script>
+  <!-- SCRIPT LOCALI -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
