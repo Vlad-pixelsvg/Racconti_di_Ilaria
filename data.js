@@ -11,50 +11,26 @@ const storieData = [
 
     status: "unlocked",
 
-    requirement: {
-      type: "free"
-    },
-
     readingTime: "5 min",
 
-    abstract: `
-      I miei punti fermi sullo schermo:
-      la profilazione di <span class="redacted">Criminal Minds</span>,
-      l'antropologia di <span class="redacted">Bones</span>
-      e le indagini di <span class="redacted">CSI: Scena del crimine</span>.
-      Sul fronte film, l'equilibrio oscilla tra la dolcezza de
-      <span class="redacted">L'amore non va in vacanza</span>
-      e l'adrenalina pura di
-      <span class="redacted">Fast & Furious</span>
-      e <span class="redacted">John Wick</span>.
-    `,
+    abstract:
+      "I miei punti fermi sullo schermo: la profilazione di <span class='redacted'>Criminal Minds</span>, l'antropologia di <span class='redacted'>Bones</span> e le indagini di <span class='redacted'>CSI: Scena del crimine</span>. Sul fronte film, l'equilibrio oscilla tra la dolcezza de <span class='redacted'>L'amore non va in vacanza</span> e l'adrenalina pura di <span class='redacted'>Fast & Furious</span> e <span class='redacted'>John Wick</span>.",
 
-    content: `
-      <p>
-        Ci sono cose che non considero semplicemente programmi televisivi.
-        Sono diventate una specie di compagnia.
-      </p>
+    intro:
+      "Ci sono cose che entrano nella nostra vita quasi senza chiedere permesso. Una serie vista per caso, un film riguardato troppe volte, una serata diventata improvvisamente una maratona.",
 
-      <p>
-        Per molto tempo i miei punti fermi sono stati
-        <span class="redacted">Criminal Minds</span>,
-        <span class="redacted">Bones</span> e
-        <span class="redacted">CSI: Scena del crimine</span>.
-      </p>
+    body: [
+      "Alla fine alcune storie sullo schermo diventano una specie di compagnia. Non importa quante volte le hai già viste: quando ricominciano, sai già cosa succederà e proprio per questo ti senti un po' a casa.",
 
-      <p>
-        Poi ci sono i film.
-        Da una parte la dolcezza de
-        <span class="redacted">L'amore non va in vacanza</span>.
-        Dall'altra <span class="redacted">Fast & Furious</span>
-        e <span class="redacted">John Wick</span>.
-      </p>
+      "Criminal Minds, Bones e CSI sono diventati alcuni dei miei punti fermi. Personaggi, casi, indagini e quelle serate in cui dicevo che avrei guardato soltanto un episodio.",
 
-      <p>
-        Non è necessariamente buon gusto.
-        È semplicemente parte di me.
-      </p>
-    `
+      "Poi ci sono i film. L'amore non va in vacanza da una parte, Fast & Furious e John Wick dall'altra. Non esattamente una selezione cinematografica coerente, ma non ho mai detto che lo fosse.",
+
+      "Forse è proprio questo il bello dei gusti personali: non devono necessariamente avere senso per qualcun altro."
+    ],
+
+    note:
+      "Questa è probabilmente la storia più innocua dell'intero archivio. Per ora."
   },
 
 
@@ -69,45 +45,30 @@ const storieData = [
 
     status: "unlocked",
 
-    requirement: {
-      type: "free"
-    },
-
     readingTime: "4 min",
 
-    abstract: `
-      È successo a <span class="redacted">Bologna</span> nel 2022.
-      Credevo mi stesse portando il conto,
-      invece voleva il mio numero.
-    `,
+    abstract:
+      "È successo a <span class='redacted'>Bologna</span> nel 2022. Credevo mi stesse portando il conto, invece voleva il mio numero.",
 
-    content: `
-      <p>
-        È successo a <span class="redacted">Bologna</span> nel 2022.
-      </p>
+    intro:
+      "Ci sono momenti in cui il cervello decide autonomamente di abbandonare il corpo. Questo è uno di quelli.",
 
-      <p>
-        Ero convinta che la persona che si stava avvicinando
-        al tavolo fosse il cameriere.
-      </p>
+    body: [
+      "Era una sera apparentemente normale. Ero a Bologna e stavo passando una serata tranquilla quando ho notato un ragazzo avvicinarsi al tavolo.",
 
-      <p>
-        Quindi, con assoluta naturalezza,
-        ho iniziato a chiedere informazioni sul conto.
-      </p>
+      "Nella mia testa la spiegazione più logica era che fosse il cameriere. Non so perché. Forse aveva quell'aria. Forse avevo semplicemente deciso che quella fosse la realtà.",
 
-      <p>
-        Il problema è che non era il cameriere.
-      </p>
+      "Il problema è che non voleva portarmi il conto.",
 
-      <p>
-        Era <span class="redacted">Marco</span>.
-      </p>
+      "Voleva il mio numero.",
 
-      <p>
-        E voleva il mio numero.
-      </p>
-    `
+      "La cosa peggiore non è stata la confusione iniziale. È stato il momento esatto in cui ho capito di aver completamente frainteso la situazione.",
+
+      "Da quel momento ho sviluppato una regola molto semplice: prima di parlare con qualcuno, aspettare almeno tre secondi e capire perché si sta avvicinando."
+    ],
+
+    note:
+      "A mia discolpa: quella sera il cameriere aveva davvero la stessa giacca."
   },
 
 
@@ -122,43 +83,30 @@ const storieData = [
 
     status: "locked_inexperience",
 
-    requirement: {
-      type: "experience",
-      amount: 2
-    },
-
     readingTime: "6 min",
 
-    abstract: `
-      Un resoconto sugli errori commessi quando non sapevo ancora
-      come ci si difende in un ufficio.
-    `,
+    abstract:
+      "Un resoconto sugli errori commessi quando non sapevo ancora come ci si difende in un ufficio.",
 
-    content: `
-      <p>
-        Il primo lavoro ti insegna moltissime cose.
-      </p>
+    intro:
+      "Il primo lavoro dovrebbe insegnarti qualcosa. Il mio mi ha insegnato soprattutto cosa non fare la seconda volta.",
 
-      <p>
-        Alcune sono quelle che ti aspetti.
-        Altre assolutamente no.
-      </p>
+    body: [
+      "Quando inizi a lavorare pensi che basti essere puntuale, disponibile e fare bene quello che ti viene chiesto.",
 
-      <p>
-        Pensavo che essere disponibili significasse dire sempre sì.
-        Pensavo che impegnarsi molto fosse sufficiente.
-      </p>
+      "È una convinzione molto tenera.",
 
-      <p>
-        Non lo era.
-      </p>
+      "Con il tempo impari che un ambiente di lavoro ha regole non scritte, dinamiche che nessuno ti spiega e situazioni in cui dire sempre sì non è necessariamente una virtù.",
 
-      <p>
-        Ho imparato che esistono confini,
-        persone difficili e conversazioni
-        che devi imparare ad affrontare.
-      </p>
-    `
+      "Io queste cose le ho imparate nel modo più lento possibile: sbagliando.",
+
+      "Non è stata un'esperienza completamente negativa. Anzi, alcune delle cose che ho imparato allora mi sono rimaste molto più di qualsiasi manuale.",
+
+      "Però ci sono dettagli che preferisco raccontare soltanto a chi ha già dimostrato di sapere cosa significa essere completamente inesperti."
+    ],
+
+    note:
+      "ACCESSO LIMITATO — questa storia richiede un minimo di esperienza."
   },
 
 
@@ -173,234 +121,32 @@ const storieData = [
 
     status: "locked_wine",
 
-    requirement: {
-      type: "wine",
-      amount: 1
-    },
-
-    wineRequired: "1 Calice di Rosso",
+    wineRequired: "2 Calici di Rosso",
 
     readingTime: "8 min",
 
-    abstract: `
-      Dettagli che possono essere confessati soltanto dopo
-      una certa ora e il giusto livello di alcol.
-    `,
+    abstract:
+      "Dettagli che possono essere confessati soltanto dopo una certa ora e il giusto livello di alcol.",
 
-    content: `
-      <p>
-        Londra.
-      </p>
+    intro:
+      "Alcune serate iniziano con un programma preciso e finiscono completamente altrove.",
 
-      <p>
-        Una sera che doveva essere tranquilla
-        e che ha preso una direzione completamente diversa.
-      </p>
+    body: [
+      "Londra era già una pessima premessa per prendere decisioni ragionevoli.",
 
-      <p>
-        C'erano musica, persone e decisioni
-        che sembravano ottime in quel momento.
-      </p>
+      "Avevamo un programma. Naturalmente non lo abbiamo seguito.",
 
-      <p>
-        E poi c'era una quantità discutibile di
-        <span class="redacted">vino rosso</span>.
-      </p>
+      "Da quel momento la serata ha cominciato a prendere una direzione che, raccontata a mente fredda, sembra quasi inventata.",
 
-      <p>
-        Il resto preferisco raccontarlo davanti a un bicchiere.
-      </p>
-    `
-  },
+      "Ci sono stati momenti in cui sarebbe stato molto più intelligente tornare in albergo. Non lo abbiamo fatto.",
 
+      "Il resto della storia è una combinazione di decisioni impulsive, coincidenze improbabili e almeno una cosa che preferirei non mettere per iscritto.",
 
-  {
-    id: "DOC-05",
+      "Forse un giorno la racconterò tutta."
+    ],
 
-    title: "Una cosa che non ammetterò facilmente",
-
-    category: "Confessioni",
-
-    mood: "Vergognoso",
-
-    status: "locked_inexperience",
-
-    requirement: {
-      type: "experience",
-      amount: 4
-    },
-
-    readingTime: "7 min",
-
-    abstract: `
-      Per arrivare qui bisogna aver già letto abbastanza di me.
-    `,
-
-    content: `
-      <p>
-        Questa è una di quelle storie che non racconterei
-        alla prima persona che incontro.
-      </p>
-
-      <p>
-        Non perché sia particolarmente grave.
-      </p>
-
-      <p>
-        Semplicemente perché dice qualcosa di me
-        che normalmente preferisco nascondere.
-      </p>
-
-      <p>
-        Ho passato molto tempo a cercare di sembrare
-        più sicura di quanto fossi realmente.
-      </p>
-    `
-  },
-
-
-  {
-    id: "DOC-06",
-
-    title: "Quella volta in cui avrei dovuto stare zitta",
-
-    category: "Aneddoti",
-
-    mood: "Cinico",
-
-    status: "locked_inexperience",
-
-    requirement: {
-      type: "experience",
-      amount: 6
-    },
-
-    readingTime: "5 min",
-
-    abstract: `
-      Una frase detta nel momento sbagliato
-      può diventare una storia per anni.
-    `,
-
-    content: `
-      <p>
-        Ci sono momenti in cui il cervello dovrebbe
-        semplicemente premere il pulsante pausa.
-      </p>
-
-      <p>
-        Il mio, quel giorno, evidentemente non lo trovava.
-      </p>
-
-      <p>
-        Ho detto esattamente quello che pensavo.
-      </p>
-
-      <p>
-        Era sincero.
-        Era spontaneo.
-        Era completamente fuori luogo.
-      </p>
-
-      <p>
-        Il silenzio successivo è ancora oggi
-        uno dei silenzi più lunghi che ricordi.
-      </p>
-    `
-  },
-
-
-  {
-    id: "DOC-07",
-
-    title: "La storia che non avevo intenzione di raccontare",
-
-    category: "Confessioni",
-
-    mood: "Nostalgico",
-
-    status: "locked_inexperience",
-
-    requirement: {
-      type: "experience",
-      amount: 10
-    },
-
-    readingTime: "10 min",
-
-    abstract: `
-      Alcune storie diventano più facili da raccontare
-      con il tempo.
-    `,
-
-    content: `
-      <p>
-        Alcune persone entrano nella nostra vita
-        senza che ce ne accorgiamo immediatamente.
-      </p>
-
-      <p>
-        Poi, quando guardiamo indietro,
-        ci rendiamo conto che hanno lasciato una traccia
-        molto più grande di quanto pensassimo.
-      </p>
-
-      <p>
-        Questa è una di quelle storie.
-      </p>
-
-      <p>
-        E probabilmente è anche quella che racconta meglio
-        perché esiste questa raccolta.
-      </p>
-    `
-  },
-
-
-  {
-    id: "DOC-08",
-
-    title: "Questa forse è meglio con due bicchieri",
-
-    category: "Segreti",
-
-    mood: "Impulsivo",
-
-    status: "locked_wine",
-
-    requirement: {
-      type: "wine",
-      amount: 2
-    },
-
-    readingTime: "12 min",
-
-    abstract: `
-      Non tutte le storie sono fatte per essere raccontate
-      al primo bicchiere.
-    `,
-
-    content: `
-      <p>
-        Un bicchiere può aiutare a iniziare una conversazione.
-      </p>
-
-      <p>
-        Due possono aiutare a finirla.
-      </p>
-
-      <p>
-        Questa storia appartiene decisamente
-        alla seconda categoria.
-      </p>
-
-      <p>
-        Non ci sono grandi misteri.
-        Soltanto una serie di decisioni discutibili,
-        una notte molto lunga e una persona che,
-        probabilmente, non avrebbe dovuto essere lì.
-      </p>
-    `
+    note:
+      "QUESTA STORIA È STATA CLASSIFICATA COME: 'MEGLIO NON LEGGERLA DA SOBRI'."
   }
 
 ];
