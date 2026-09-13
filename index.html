@@ -4,498 +4,286 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ilaria — Le mie storie</title>
+  <title>Ilaria — Cose che non ti avevo raccontato</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta
+    name="description"
+    content="Storie, ricordi, decisioni discutibili e cose che Ilaria forse non avrebbe dovuto raccontare."
+  >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            paper: "#F4F0E7",
-            paperLight: "#FAF8F2",
-            ink: "#242321",
-            red: "#C83B2E",
-            redDark: "#9F2D24",
-            line: "#D8D0C0",
-            muted: "#7C776D"
-          },
-
-          fontFamily: {
-            serif: ["Newsreader", "serif"],
-            mono: ["DM Mono", "monospace"]
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: #F4F0E7;
-      color: #242321;
-    }
-
-    /* GRID CARTA */
-
-    .paper-grid {
-      background-color: #F4F0E7;
-      background-image:
-        linear-gradient(rgba(95, 88, 74, 0.10) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(95, 88, 74, 0.10) 1px, transparent 1px);
-      background-size: 30px 30px;
-    }
-
-    /* HEADER */
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(244, 240, 231, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #D8D0C0;
-    }
-
-    /* HERO */
-
-    .hero {
-      min-height: 560px;
-      display: flex;
-      align-items: center;
-      background: #FAF8F2;
-      border-bottom: 1px solid #D8D0C0;
-    }
-
-    .hero-title {
-      font-size: clamp(3.8rem, 8vw, 7.8rem);
-      line-height: 0.82;
-      letter-spacing: -0.055em;
-    }
-
-    .outline-text {
-      color: transparent;
-      -webkit-text-stroke: 1.5px #242321;
-    }
-
-    /* FILTRI */
-
-    .filter-btn {
-      border: 1px solid #C83B2E;
-      color: #C83B2E;
-      background: transparent;
-      padding: 9px 15px;
-      font-family: "DM Mono", monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      transition: 0.2s ease;
-    }
-
-    .filter-btn:hover,
-    .filter-btn.active {
-      background: #C83B2E;
-      color: white;
-    }
-
-    /* STORY CARD */
-
-    .story-card {
-      position: relative;
-      background: #FAF8F2;
-      border: 1px solid #D8D0C0;
-      min-height: 390px;
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s ease;
-      overflow: hidden;
-    }
-
-    .story-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 5px;
-      height: 100%;
-      background: #C83B2E;
-      transform: scaleY(0);
-      transform-origin: bottom;
-      transition: transform 0.3s ease;
-    }
-
-    .story-card:hover {
-      transform: translateY(-7px);
-      border-color: #C83B2E;
-      box-shadow: 12px 12px 0 rgba(36, 35, 33, 0.08);
-    }
-
-    .story-card:hover::before {
-      transform: scaleY(1);
-      transform-origin: top;
-    }
-
-    .story-number {
-      font-family: "DM Mono", monospace;
-      color: #C83B2E;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-    }
-
-    .story-title {
-      font-family: "Newsreader", serif;
-      font-size: 31px;
-      line-height: 0.98;
-      letter-spacing: -0.025em;
-    }
-
-    .story-abstract {
-      font-family: "Newsreader", serif;
-      font-size: 17px;
-      line-height: 1.45;
-      color: #6D685F;
-    }
-
-    .story-footer {
-      border-top: 1px solid #D8D0C0;
-      padding-top: 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* REDACTED */
-
-    .redacted {
-      background: #242321;
-      color: transparent;
-      padding: 0 5px;
-      border-radius: 2px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .redacted:hover {
-      background: #C83B2E;
-      color: white;
-    }
-
-    /* LOCKED */
-
-    .locked-card {
-      opacity: 0.68;
-      filter: grayscale(0.3);
-    }
-
-    .locked-card:hover {
-      transform: none;
-      border-color: #D8D0C0;
-      box-shadow: none;
-    }
-
-    .lock-box {
-      margin-top: 25px;
-      padding: 14px;
-      border: 1px dashed #BEB6A6;
-      background: #F0ECE3;
-      font-family: "DM Mono", monospace;
-      font-size: 10px;
-      line-height: 1.5;
-      text-transform: uppercase;
-      color: #777064;
-    }
-
-    /* PROGRESS */
-
-    .experience-bar {
-      height: 5px;
-      background: #DDD6C9;
-      overflow: hidden;
-    }
-
-    .experience-progress {
-      height: 100%;
-      background: #C83B2E;
-      width: 0%;
-      transition: width 0.5s ease;
-    }
-
-    /* MODALE */
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(36, 35, 33, 0.65);
-      backdrop-filter: blur(8px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal.open {
-      display: flex;
-    }
-
-    .modal-window {
-      width: min(780px, 100%);
-      max-height: 90vh;
-      overflow-y: auto;
-      background: #FAF8F2;
-      border: 1px solid #D8D0C0;
-      box-shadow: 20px 20px 0 rgba(0,0,0,0.15);
-    }
-
-    .modal-content {
-      padding: 45px;
-    }
-
-    /* MOBILE */
-
-    @media (max-width: 640px) {
-
-      .hero {
-        min-height: 480px;
-      }
-
-      .hero-title {
-        font-size: 4rem;
-      }
-
-      .story-card {
-        min-height: 350px;
-        padding: 24px;
-      }
-
-      .modal-content {
-        padding: 28px;
-      }
-    }
-
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- HEADER -->
+  <!-- CURSORE DECORATIVO -->
+  <div class="cursor-dot"></div>
 
+  <!-- HEADER -->
   <header class="site-header">
 
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+    <a href="#" class="logo" aria-label="Torna all'inizio">
+      <span class="logo-symbol">✦</span>
+      <span>
+        ILARIA
+        <small>PRIVATE STORIES</small>
+      </span>
+    </a>
 
-      <div>
-        <div class="font-mono text-xs tracking-[0.15em] uppercase">
-          ILARIA
-        </div>
-
-        <div class="font-mono text-[9px] text-muted mt-1">
-          PERSONAL STORY COLLECTION
-        </div>
-      </div>
-
-      <div class="hidden md:block text-center">
-        <span class="font-mono text-[9px] text-muted tracking-[0.2em]">
-          LEGGERE PER CONOSCERE
-        </span>
-      </div>
-
-      <div class="flex items-center gap-4">
-
-        <div class="hidden sm:block text-right">
-
-          <div class="font-mono text-[9px] text-muted uppercase">
-            Esperienza
-          </div>
-
-          <div class="font-mono text-xs">
-            <span id="experience-value">0</span> XP
-          </div>
-
-        </div>
-
-        <div class="font-mono text-xs border border-red text-red px-3 py-2">
-          <span id="wine-count">0</span> 🍷
-        </div>
-
-      </div>
-
+    <div class="header-center">
+      <span>NO. 001</span>
+      <span class="header-separator">—</span>
+      <span>PERSONAL ARCHIVE</span>
     </div>
+
+    <button class="header-button" id="surprise-btn">
+      <span>SORPRENDIMI</span>
+      <span class="arrow">↗</span>
+    </button>
 
   </header>
 
 
   <!-- HERO -->
+  <main>
 
-  <section class="hero">
+    <section class="hero">
 
-    <div class="max-w-7xl mx-auto px-6 w-full">
+      <div class="hero-grid"></div>
 
-      <div class="grid lg:grid-cols-2 gap-16 items-end">
+      <div class="hero-topline">
+        <span>PRIVATE RECORDS</span>
+        <span>EST. 2004</span>
+        <span>ACCESS: OPEN</span>
+      </div>
 
-        <div>
+      <div class="hero-content">
 
-          <div class="font-mono text-xs text-red tracking-[0.15em] mb-8">
-            01 — LE MIE STORIE
-          </div>
-
-          <h1 class="font-serif hero-title font-medium">
-
-            Da qualche parte
-
-            <br>
-
-            bisogna
-
-            <br>
-
-            <span class="outline-text">
-              cominciare.
-            </span>
-
-          </h1>
-
+        <div class="hero-label">
+          <span class="label-line"></span>
+          STORIE PERSONALI
         </div>
 
+        <h1>
+          Cose che
+          <br>
+          <span>non ti avevo</span>
+          <br>
+          raccontato.
+        </h1>
 
-        <div class="lg:pb-5">
+        <div class="hero-description">
 
-          <p class="font-serif italic text-2xl leading-relaxed max-w-md">
-
-            Alcune storie sono già aperte.
-            Altre arriveranno quando avrai
-            imparato abbastanza cose su di me.
-
+          <p>
+            Alcune sono vere.
+            Alcune sono leggermente
+            <span class="redacted">modificate.</span>
           </p>
 
-          <div class="mt-10 max-w-md">
-
-            <div class="flex justify-between font-mono text-[9px] uppercase text-muted mb-2">
-
-              <span>Esperienza accumulata</span>
-
-              <span>
-                <span id="xp-current">0</span> /
-                <span id="xp-next">10</span> XP
-              </span>
-
-            </div>
-
-            <div class="experience-bar">
-
-              <div
-                id="experience-progress"
-                class="experience-progress"
-              ></div>
-
-            </div>
-
-          </div>
+          <p class="hero-note">
+            — Ilaria
+          </p>
 
         </div>
 
       </div>
 
-    </div>
+      <!-- DOCUMENTO DECORATIVO -->
+      <div class="hero-paper">
 
-  </section>
+        <div class="paper-header">
+          <span>PERSONAL NOTE</span>
+          <span>01 / 04</span>
+        </div>
+
+        <div class="paper-line"></div>
+
+        <p>
+          Non tutte le cose che ricordo
+          hanno necessariamente bisogno
+          di essere raccontate.
+        </p>
+
+        <p class="paper-handwritten">
+          ...ma ormai sei qui.
+        </p>
+
+        <div class="paper-stamp">
+          PRIVATE
+        </div>
+
+      </div>
+
+      <div class="hero-side-label">
+        SCROLL TO REMEMBER
+      </div>
+
+      <div class="hero-scroll">
+        <span>SCORRI</span>
+        <span class="scroll-line"></span>
+        <span>↓</span>
+      </div>
+
+    </section>
 
 
-  <!-- STORIES -->
+    <!-- INTRO -->
+    <section class="intro-section">
 
-  <main class="paper-grid">
+      <div class="section-number">01</div>
 
-    <section class="max-w-7xl mx-auto px-6 py-20">
+      <div class="intro-main">
 
-      <!-- FILTERS -->
+        <span class="eyebrow">UN PICCOLO AVVERTIMENTO</span>
 
-      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+        <h2>
+          Non è un archivio.
+          <br>
+          <em>È la mia versione dei fatti.</em>
+        </h2>
+
+        <p>
+          Ci sono ricordi che raccontiamo cento volte,
+          altri che teniamo per noi e altri ancora che
+          diventano divertenti soltanto dopo qualche anno.
+        </p>
+
+        <p>
+          Questi sono alcuni di quelli che ho deciso
+          di lasciare qui.
+        </p>
+
+      </div>
+
+      <div class="intro-note">
+        <span>NOTE / 001</span>
+        <strong>
+          La memoria è una pessima testimone.
+        </strong>
+        <small>
+          Ma almeno sa raccontare bene le storie.
+        </small>
+      </div>
+
+    </section>
+
+
+    <!-- STORIES -->
+    <section class="stories-section" id="storie">
+
+      <div class="stories-heading">
 
         <div>
+          <span class="eyebrow">02 — LE STORIE</span>
 
-          <div class="font-mono text-[10px] text-red uppercase tracking-[0.15em] mb-4">
-            02 — RACCONTI
-          </div>
-
-          <h2 class="font-serif text-5xl tracking-tight">
-            Quello che posso raccontarti.
+          <h2>
+            Da dove
+            <em>cominciamo?</em>
           </h2>
-
         </div>
 
-        <div id="mood-filters" class="flex flex-wrap gap-2">
-
-          <button class="filter-btn active" data-mood="ALL">
-            Tutte
-          </button>
-
-          <button class="filter-btn" data-mood="Nostalgico">
-            Nostalgico
-          </button>
-
-          <button class="filter-btn" data-mood="Impulsivo">
-            Impulsivo
-          </button>
-
-          <button class="filter-btn" data-mood="Vergognoso">
-            Vergognoso
-          </button>
-
-          <button class="filter-btn" data-mood="Cinico">
-            Cinico
-          </button>
-
+        <div class="story-count">
+          <strong id="story-count">04</strong>
+          <span>STORIE</span>
         </div>
 
       </div>
 
 
-      <!-- STORY GRID -->
+      <!-- FILTRI -->
+      <div class="story-filters">
 
-      <div
-        id="grid-container"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
+        <span class="filter-label">FORSE TI INTERESSA:</span>
+
+        <button class="filter-btn active" data-mood="ALL">
+          TUTTO
+        </button>
+
+        <button class="filter-btn" data-mood="Nostalgico">
+          NOSTALGIA
+        </button>
+
+        <button class="filter-btn" data-mood="Impulsivo">
+          PESSIME IDEE
+        </button>
+
+        <button class="filter-btn" data-mood="Vergognoso">
+          FIGURACCE
+        </button>
+
+        <button class="filter-btn" data-mood="Cinico">
+          CINISMO
+        </button>
+
       </div>
 
 
-      <!-- EMPTY -->
+      <!-- GRID -->
+      <div id="stories-grid" class="stories-grid"></div>
 
-      <div
-        id="empty-message"
-        class="hidden text-center py-24"
-      >
+    </section>
 
-        <div class="font-mono text-xs text-muted uppercase">
-          Nessuna storia trovata.
-        </div>
+
+    <!-- RANDOM STORY -->
+    <section class="random-section">
+
+      <div class="random-background-text">
+        TELL ME
+        <br>
+        SOMETHING
+      </div>
+
+      <div class="random-content">
+
+        <span class="eyebrow">NON SAI COSA LEGGERE?</span>
+
+        <h2>
+          Lascia scegliere
+          <br>
+          <em>a me.</em>
+        </h2>
+
+        <p>
+          Non prometto che sarà una buona scelta.
+        </p>
+
+        <button id="random-story-button" class="big-button">
+          <span>RACCONTAMI QUALCOSA</span>
+          <span>↗</span>
+        </button>
 
       </div>
+
+    </section>
+
+
+    <!-- FOOTER INTRO -->
+    <section class="closing-section">
+
+      <div class="closing-mark">✦</div>
+
+      <h2>
+        L'archivio
+        <br>
+        <em>non è mai completo.</em>
+      </h2>
+
+      <p>
+        Potrei aggiungere altre storie.
+        Potrei anche decidere di non farlo.
+      </p>
+
+      <span class="closing-signature">
+        — Ilaria
+      </span>
 
     </section>
 
@@ -503,99 +291,47 @@
 
 
   <!-- FOOTER -->
+  <footer class="site-footer">
 
-  <footer class="bg-ink text-paper">
+    <div>
+      <strong>ILARIA</strong>
+      <span>PRIVATE STORIES</span>
+    </div>
 
-    <div class="max-w-7xl mx-auto px-6 py-16">
+    <div>
+      NO. 001 — 2026
+    </div>
 
-      <div class="grid md:grid-cols-2 gap-12">
-
-        <div>
-
-          <div class="font-mono text-xs tracking-[0.2em] mb-5">
-            ILARIA
-          </div>
-
-          <p class="font-serif text-3xl leading-tight max-w-lg">
-            Non tutto quello che è successo
-            merita di essere raccontato subito.
-          </p>
-
-        </div>
-
-        <div class="md:text-right font-mono text-[10px] text-gray-400 leading-loose">
-
-          PERSONAL STORY COLLECTION<br>
-          © 2026 ILARIA<br>
-          ALCUNI DETTAGLI POTREBBERO ESSERE STATI
-          LEGGERMENTE MODIFICATI.
-
-        </div>
-
-      </div>
-
+    <div>
+      MADE WITH TOO MANY MEMORIES
     </div>
 
   </footer>
 
 
-  <!-- MODAL -->
+  <!-- MODALE / RACCONTO -->
+  <div
+    id="story-modal"
+    class="story-modal"
+    aria-hidden="true"
+  >
 
-  <div id="story-modal" class="modal">
+    <div class="modal-overlay"></div>
 
-    <div class="modal-window">
+    <article class="story-reader">
 
-      <div class="modal-content">
+      <button
+        id="modal-close"
+        class="modal-close"
+        aria-label="Chiudi storia"
+      >
+        <span>CHIUDI</span>
+        <strong>×</strong>
+      </button>
 
-        <div class="flex justify-between items-start gap-6 mb-10">
+      <div id="modal-content"></div>
 
-          <div>
-
-            <div
-              id="modal-category"
-              class="font-mono text-[10px] text-red uppercase tracking-[0.15em]"
-            ></div>
-
-            <div
-              id="modal-id"
-              class="font-mono text-[9px] text-muted mt-2"
-            ></div>
-
-          </div>
-
-          <button
-            id="modal-close"
-            class="font-mono text-xs border border-line px-3 py-2 hover:border-red hover:text-red transition"
-          >
-            CHIUDI ×
-          </button>
-
-        </div>
-
-
-        <h2
-          id="modal-title"
-          class="font-serif text-5xl leading-none tracking-tight mb-8"
-        ></h2>
-
-
-        <div
-          id="modal-body"
-          class="font-serif text-xl leading-relaxed text-[#57534B]"
-        ></div>
-
-
-        <div class="mt-12 pt-6 border-t border-line flex justify-between font-mono text-[9px] text-muted uppercase">
-
-          <span id="modal-mood"></span>
-
-          <span id="modal-reading-time"></span>
-
-        </div>
-
-      </div>
-
-    </div>
+    </article>
 
   </div>
 
